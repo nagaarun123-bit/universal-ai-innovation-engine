@@ -5,7 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07111f">
-<title>Universal AI Innovation Engine V2.1</title>
+<meta name="description" content="Universal AI Innovation Engine - AI Problem Solver and Innovation Assistant">
+<title>Universal AI Innovation Engine V2.6</title>
 
 <style>
 :root{
@@ -16,6 +17,7 @@
  --teal:#21d4c2;
  --blue:#3988ff;
  --border:#263c56;
+ --danger:#ff7777;
 }
 *{box-sizing:border-box}
 body{
@@ -25,7 +27,7 @@ body{
  color:var(--text);
  font-family:Arial,sans-serif;
 }
-.container{max-width:760px;margin:auto}
+.container{max-width:820px;margin:auto}
 header{text-align:center;margin:10px 0 22px}
 h1{font-size:25px;margin:0 0 7px}
 .version{font-size:13px;color:var(--teal)}
@@ -54,7 +56,7 @@ select,textarea{
  font-size:15px;
 }
 textarea{
- min-height:115px;
+ min-height:125px;
  resize:vertical;
  line-height:1.5;
 }
@@ -71,7 +73,11 @@ button{
 button:disabled{opacity:.5;cursor:not-allowed}
 .secondary{background:#263d59;color:#eaf2ff}
 .blue{background:var(--blue);color:white}
-.main{width:100%;margin-top:13px;font-size:16px}
+.main{
+ width:100%;
+ margin-top:13px;
+ font-size:16px;
+}
 .controls{display:flex;gap:8px;flex-wrap:wrap}
 .row{
  display:grid;
@@ -90,6 +96,11 @@ button:disabled{opacity:.5;cursor:not-allowed}
  font-size:14px;
  min-height:42px;
 }
+pre.output{
+ font-family:Consolas,monospace;
+ overflow-x:auto;
+ white-space:pre;
+}
 .result-title{
  font-size:14px;
  color:var(--teal);
@@ -101,8 +112,15 @@ button:disabled{opacity:.5;cursor:not-allowed}
  color:var(--muted);
  margin-top:10px;
  min-height:18px;
+ overflow-wrap:anywhere;
 }
 #resultSection{display:none}
+.hint{
+ color:var(--muted);
+ font-size:12px;
+ line-height:1.5;
+ margin-top:8px;
+}
 footer{
  text-align:center;
  color:#7588a2;
@@ -114,6 +132,7 @@ footer{
  h1{font-size:22px}
  .row{grid-template-columns:1fr}
  .section{padding:13px}
+ button{min-height:42px}
 }
 </style>
 </head>
@@ -123,9 +142,9 @@ footer{
 
 <header>
  <h1>Universal AI Innovation Engine</h1>
- <div class="version">V2.1 — Simple AI Problem Solver</div>
+ <div class="version">V2.6 — AI Innovation Assistant</div>
  <div class="subtitle">
- Understand problems. Find solutions. Create practical ideas.
+ Understand Problems · Discover Solutions · Develop Inventions
  </div>
  <div class="version" id="connection">Checking connection...</div>
 </header>
@@ -136,15 +155,23 @@ footer{
   <option value="English">English</option>
   <option value="Telugu">తెలుగు</option>
   <option value="Hindi">हिंदी</option>
+  <option value="Tamil">தமிழ்</option>
+  <option value="Malayalam">മലയാളം</option>
+  <option value="Kannada">ಕನ್ನಡ</option>
  </select>
 </section>
 
 <section class="section">
  <h2>2. Describe Your Problem</h2>
- <label for="problem">Type or speak your question or problem.</label>
 
- <textarea id="problem"
- placeholder="Example: My shop loses money because products expire before selling."></textarea>
+ <label for="problem">
+ Type or speak your question, challenge or invention idea.
+ </label>
+
+ <textarea
+  id="problem"
+  placeholder="Example: My village faces water shortage during summer."
+ ></textarea>
 
  <div class="controls" style="margin-top:10px">
   <button class="secondary" id="speakBtn">🎤 Speak Problem</button>
@@ -155,19 +182,27 @@ footer{
   <div>
    <label for="level">Solution Level</label>
    <select id="level">
-    <option>Easy</option>
-    <option selected>Practical</option>
-    <option>Advanced</option>
+    <option value="Easy">Easy</option>
+    <option value="Practical" selected>Practical</option>
+    <option value="Advanced">Advanced</option>
    </select>
   </div>
  </div>
 
- <button class="main" id="analyzeBtn">Analyze Problem</button>
+ <button class="main" id="analyzeBtn">
+  Analyze Problem
+ </button>
+
+ <div class="hint">
+  Tip: Describe the actual problem clearly. More details can help produce more useful solutions.
+  Press Ctrl + Enter to analyze.
+ </div>
+
  <div class="status" id="status" aria-live="polite"></div>
 </section>
 
 <section class="section" id="resultSection">
- <h2>3. Your Solution</h2>
+ <h2>3. AI Analysis & Innovation Results</h2>
 
  <div class="result-title">Problem Understanding</div>
  <div class="output" id="understanding"></div>
@@ -184,19 +219,50 @@ footer{
  <div class="result-title">Action Plan — What to Do Next</div>
  <div class="output" id="actionPlan"></div>
 
+ <div class="result-title">Innovation Concept — కొత్త ఆవిష్కరణ</div>
+ <div class="output" id="innovationConcept"></div>
+
+ <div class="result-title">Scientific Feasibility — సాధ్యాసాధ్యత</div>
+ <div class="output" id="feasibility"></div>
+
+ <div class="result-title">Required Components — అవసరమైన వస్తువులు</div>
+ <div class="output" id="components"></div>
+
+ <div class="result-title">Prototype Plan — నమూనా తయారీ</div>
+ <div class="output" id="prototypePlan"></div>
+
+ <div class="result-title">Risks & Safety — ప్రమాదాలు మరియు భద్రత</div>
+ <div class="output" id="risks"></div>
+
+ <div class="result-title">2D System Diagram — Mermaid</div>
+ <div class="output" id="diagram2D"></div>
+
+ <div class="result-title">3D Design Concept</div>
+ <div class="output" id="model3D"></div>
+
+ <div class="result-title">OpenSCAD 3D Model Code</div>
+ <pre class="output" id="openscadCode"></pre>
+
+ <div class="result-title">Research Required</div>
+ <div class="output" id="researchNeeded"></div>
+
  <div class="controls" style="margin-top:14px">
   <button class="blue" id="copyBtn">Copy Complete Answer</button>
  </div>
+
  <div class="status" id="copyStatus"></div>
 </section>
 
-<footer>Universal AI Innovation Engine · V2.1</footer>
+<footer>
+ Universal AI Innovation Engine · V2.6
+</footer>
 
 </div>
 
 <script>
 "use strict";
 
+/* Cloudflare Worker endpoint */
 const AI_ENDPOINT =
  "https://universal-ai-engine.nagaarun123.workers.dev";
 
@@ -204,113 +270,178 @@ const $ = id => document.getElementById(id);
 
 let lastAnswer = "";
 let recognition = null;
+let isAnalyzing = false;
 
+/* Language messages */
 const messages = {
  English:{
   empty:"Please describe your problem first.",
-  connecting:"Analyzing your problem with Gemini AI...",
-  success:"Analysis completed.",
-  failed:"AI connection failed. Please try again.",
-  offline:"Internet connection unavailable. Connect and try again.",
-  copied:"Answer copied.",
+  connecting:"Connecting to AI. Please wait...",
+  success:"Analysis completed successfully.",
+  failed:"AI request failed:",
+  offline:"Internet connection unavailable.",
+  copied:"Complete answer copied successfully.",
   noAnswer:"Analyze a problem first.",
   listening:"Listening... Speak now.",
   stopped:"Voice input stopped."
  },
  Telugu:{
   empty:"ముందుగా మీ సమస్యను వివరించండి.",
-  connecting:"Gemini AI మీ సమస్యను విశ్లేషిస్తోంది...",
+  connecting:"AI కి కనెక్ట్ అవుతోంది. దయచేసి వేచి ఉండండి...",
   success:"విశ్లేషణ పూర్తయింది.",
-  failed:"AI కనెక్షన్ విఫలమైంది. మళ్లీ ప్రయత్నించండి.",
-  offline:"Internet లేదు. కనెక్ట్ చేసి మళ్లీ ప్రయత్నించండి.",
-  copied:"సమాధానం కాపీ అయింది.",
+  failed:"AI అభ్యర్థన విఫలమైంది:",
+  offline:"ఇంటర్నెట్ కనెక్షన్ లేదు.",
+  copied:"పూర్తి సమాధానం కాపీ అయింది.",
   noAnswer:"ముందుగా సమస్యను Analyze చేయండి.",
   listening:"వింటోంది... ఇప్పుడు మాట్లాడండి.",
-  stopped:"Voice input ఆగింది."
+  stopped:"వాయిస్ ఇన్‌పుట్ ఆగింది."
  },
  Hindi:{
   empty:"कृपया पहले अपनी समस्या लिखें।",
-  connecting:"Gemini AI आपकी समस्या का विश्लेषण कर रहा है...",
+  connecting:"AI से जुड़ रहा है। कृपया प्रतीक्षा करें...",
   success:"विश्लेषण पूरा हुआ।",
-  failed:"AI कनेक्शन विफल हुआ। फिर कोशिश करें।",
-  offline:"इंटरनेट उपलब्ध नहीं है। दोबारा कोशिश करें।",
-  copied:"उत्तर कॉपी हो गया।",
+  failed:"AI अनुरोध विफल:",
+  offline:"इंटरनेट उपलब्ध नहीं है।",
+  copied:"पूरा उत्तर कॉपी हो गया।",
   noAnswer:"पहले समस्या का विश्लेषण करें।",
   listening:"सुन रहा है... अब बोलें।",
-  stopped:"Voice input बंद हो गया।"
+  stopped:"वॉइस इनपुट बंद हो गया।"
+ },
+ Tamil:{
+  empty:"முதலில் உங்கள் பிரச்சினையை விவரிக்கவும்.",
+  connecting:"AI உடன் இணைக்கப்படுகிறது. காத்திருக்கவும்...",
+  success:"பகுப்பாய்வு முடிந்தது.",
+  failed:"AI கோரிக்கை தோல்வியடைந்தது:",
+  offline:"இணைய இணைப்பு இல்லை.",
+  copied:"முழு பதிலும் நகலெடுக்கப்பட்டது.",
+  noAnswer:"முதலில் ஒரு பிரச்சினையை பகுப்பாய்வு செய்யவும்.",
+  listening:"கேட்கிறது... இப்போது பேசவும்.",
+  stopped:"குரல் உள்ளீடு நிறுத்தப்பட்டது."
+ },
+ Malayalam:{
+  empty:"ആദ്യം നിങ്ങളുടെ പ്രശ്നം വിവരിക്കുക.",
+  connecting:"AI-യുമായി ബന്ധിപ്പിക്കുന്നു. കാത്തിരിക്കുക...",
+  success:"വിശകലനം പൂർത്തിയായി.",
+  failed:"AI അഭ്യർത്ഥന പരാജയപ്പെട്ടു:",
+  offline:"ഇന്റർനെറ്റ് കണക്ഷൻ ലഭ്യമല്ല.",
+  copied:"മുഴുവൻ ഉത്തരവും പകർത്തി.",
+  noAnswer:"ആദ്യം ഒരു പ്രശ്നം വിശകലനം ചെയ്യുക.",
+  listening:"കേൾക്കുന്നു... ഇപ്പോൾ സംസാരിക്കുക.",
+  stopped:"ശബ്ദ ഇൻപുട്ട് നിർത്തി."
+ },
+ Kannada:{
+  empty:"ಮೊದಲು ನಿಮ್ಮ ಸಮಸ್ಯೆಯನ್ನು ವಿವರಿಸಿ.",
+  connecting:"AI ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ. ದಯವಿಟ್ಟು ಕಾಯಿರಿ...",
+  success:"ವಿಶ್ಲೇಷಣೆ ಪೂರ್ಣಗೊಂಡಿದೆ.",
+  failed:"AI ವಿನಂತಿ ವಿಫಲವಾಗಿದೆ:",
+  offline:"ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕ ಲಭ್ಯವಿಲ್ಲ.",
+  copied:"ಪೂರ್ಣ ಉತ್ತರವನ್ನು ನಕಲಿಸಲಾಗಿದೆ.",
+  noAnswer:"ಮೊದಲು ಸಮಸ್ಯೆಯನ್ನು ವಿಶ್ಲೇಷಿಸಿ.",
+  listening:"ಕೇಳುತ್ತಿದೆ... ಈಗ ಮಾತನಾಡಿ.",
+  stopped:"ಧ್ವನಿ ಇನ್‌ಪುಟ್ ನಿಲ್ಲಿಸಲಾಗಿದೆ."
  }
 };
 
 const T = () =>
  messages[$("language").value] || messages.English;
 
-function setStatus(message,error=false){
- $("status").textContent=message;
- $("status").style.color=error?"#ff7777":"#9aabc2";
-}
+/* Voice recognition language codes */
+const voiceLanguages = {
+ English:"en-IN",
+ Telugu:"te-IN",
+ Hindi:"hi-IN",
+ Tamil:"ta-IN",
+ Malayalam:"ml-IN",
+ Kannada:"kn-IN"
+};
 
+/* Connection status */
 function updateConnection(){
+ const online=navigator.onLine;
+
  $("connection").textContent =
- navigator.onLine
- ? "● Internet Connected"
- : "● Offline";
+  online ? "● Internet Connected" : "● Offline";
+
+ $("connection").style.color =
+  online ? "#21d4c2" : "#ff7777";
 }
 
 window.addEventListener("online",updateConnection);
 window.addEventListener("offline",updateConnection);
 updateConnection();
 
-/* Secure Gemini request through Cloudflare Worker */
-async function askAI(prompt){
- if(!navigator.onLine)throw new Error("NO_INTERNET");
+/* Status display */
+function setStatus(message,error=false){
+ $("status").textContent=message;
+ $("status").style.color=
+  error ? "#ff7777" : "#9aabc2";
+}
 
- const controller=new AbortController();
- const timer=setTimeout(()=>controller.abort(),60000);
+/* Ask Cloudflare Worker */
+async function askAI(problem){
+
+ if(!navigator.onLine){
+  throw new Error("NO_INTERNET");
+ }
+
+ let response;
 
  try{
-  const response=await fetch(AI_ENDPOINT,{
+  response=await fetch(AI_ENDPOINT,{
    method:"POST",
-   headers:{"Content-Type":"application/json"},
+   headers:{
+    "Content-Type":"application/json"
+   },
    cache:"no-store",
-   signal:controller.signal,
    body:JSON.stringify({
-    problem:prompt,
+    problem:problem,
     language:$("language").value,
     level:$("level").value
    })
   });
-
-  let data;
-  try{
-   data=await response.json();
-  }catch{
-   throw new Error("Invalid response from AI server.");
-  }
-
-  if(!response.ok || data.success===false){
-   throw new Error(
-    data.error || data.details || "HTTP "+response.status
-   );
-  }
-
-  const answer=
-   typeof data.answer==="string" ? data.answer :
-   typeof data.text==="string" ? data.text : "";
-
-  if(!answer.trim()){
-   throw new Error("AI returned an empty answer.");
-  }
-
-  return answer.trim();
-
- }finally{
-  clearTimeout(timer);
+ }catch(error){
+  throw new Error(
+   "Could not reach the AI server. Check your internet connection."
+  );
  }
+
+ let data;
+
+ try{
+  data=await response.json();
+ }catch(error){
+  throw new Error(
+   "Server returned invalid data. HTTP " + response.status
+  );
+ }
+
+ if(!response.ok || data.success===false){
+  const detail=
+   data.details || data.error || "Unknown server error";
+
+  throw new Error(
+   "HTTP " + response.status + ": " + detail
+  );
+ }
+
+ let answer =
+  typeof data.answer==="string" ? data.answer :
+  typeof data.text==="string" ? data.text :
+  data.answer && typeof data.answer==="object"
+   ? JSON.stringify(data.answer)
+   : "";
+
+ if(!answer.trim()){
+  throw new Error("AI returned an empty answer.");
+ }
+
+ return answer.trim();
 }
 
-/* Read structured JSON from Gemini */
+/* Parse AI JSON response */
 function parseAnswer(raw){
- let content=raw.trim()
+
+ let content=String(raw).trim()
   .replace(/^```json\s*/i,"")
   .replace(/^```\s*/,"")
   .replace(/\s*```$/,"");
@@ -318,66 +449,144 @@ function parseAnswer(raw){
  try{
   const data=JSON.parse(content);
 
-  return {
-   understanding:String(data.understanding||"").trim(),
-   solution:String(data.solution||"").trim(),
-   ideas:Array.isArray(data.ideas)
-    ? data.ideas.map(x=>String(x).trim()).filter(Boolean).slice(0,3)
-    : [],
-   bestIdea:String(data.bestIdea||"").trim(),
-   actionPlan:String(data.actionPlan||"").trim()
+  const toText=value=>{
+   if(value===null || value===undefined)return "";
+   if(typeof value==="string")return value.trim();
+
+   if(typeof value==="object"){
+    return JSON.stringify(value,null,2);
+   }
+
+   return String(value).trim();
   };
- }catch{
+
+  const toArray=value=>{
+   if(!Array.isArray(value))return [];
+
+   return value
+    .map(toText)
+    .filter(Boolean);
+  };
+
+  return {
+   understanding:toText(data.understanding),
+   solution:toText(data.solution),
+   ideas:toArray(data.ideas).slice(0,3),
+   bestIdea:toText(data.bestIdea),
+   actionPlan:toText(data.actionPlan),
+   innovationConcept:toText(data.innovationConcept),
+   feasibility:toText(data.feasibility),
+   components:toArray(data.components),
+   prototypePlan:toText(data.prototypePlan),
+   risks:toArray(data.risks),
+   diagram2D:toText(data.diagram2D),
+   model3D:toText(data.model3D),
+   openscadCode:toText(data.openscadCode),
+   researchNeeded:toText(data.researchNeeded)
+  };
+
+ }catch(error){
+  console.error("AI response parsing error:",error);
   return null;
  }
 }
 
-function buildPrompt(problem){
- return `
-You are Universal AI Innovation Engine, a practical problem-solving AI.
+/* Display AI result safely */
+function displayAnswer(result){
 
-USER PROBLEM:
-${problem}
+ const show=(id,value,fallback="Not provided.")=>{
+  $(id).textContent=value || fallback;
+ };
 
-LANGUAGE: ${$("language").value}
-SOLUTION LEVEL: ${$("level").value}
+ show("understanding",result.understanding);
+ show("solution",result.solution,"No direct answer provided.");
 
-Understand the exact problem before answering.
+ show(
+  "ideas",
+  result.ideas.length
+   ? result.ideas.map((x,i)=>(i+1)+". "+x).join("\n\n")
+   : "",
+  "No separate solutions provided."
+ );
 
-Return ONLY valid JSON. No Markdown code fences.
+ show("bestIdea",result.bestIdea);
+ show("actionPlan",result.actionPlan);
+ show("innovationConcept",result.innovationConcept);
+ show("feasibility",result.feasibility);
 
-Use this exact structure:
-{
- "understanding": "Short explanation of the actual problem.",
- "solution": "Direct answer to the user's actual question.",
- "ideas": [
-  "Relevant practical solution 1",
-  "Relevant practical solution 2",
-  "Relevant practical solution 3"
- ],
- "bestIdea": "Choose the strongest idea and explain briefly why it is best.",
- "actionPlan": "1. First step. 2. Second step. 3. Third step."
+ show(
+  "components",
+  result.components.length
+   ? result.components.map((x,i)=>(i+1)+". "+x).join("\n")
+   : ""
+ );
+
+ show("prototypePlan",result.prototypePlan);
+
+ show(
+  "risks",
+  result.risks.length
+   ? result.risks.map((x,i)=>(i+1)+". "+x).join("\n")
+   : ""
+ );
+
+ show("diagram2D",result.diagram2D,"Diagram not provided.");
+ show("model3D",result.model3D,"3D design not provided.");
+ show("openscadCode",result.openscadCode,"OpenSCAD code not provided.");
+ show("researchNeeded",result.researchNeeded,"Research details not provided.");
+
+ const sections=[
+  ["PROBLEM UNDERSTANDING","understanding"],
+  ["DIRECT ANSWER","solution"],
+  ["PRACTICAL SOLUTIONS","ideas"],
+  ["BEST IDEA","bestIdea"],
+  ["ACTION PLAN","actionPlan"],
+  ["INNOVATION CONCEPT","innovationConcept"],
+  ["SCIENTIFIC FEASIBILITY","feasibility"],
+  ["REQUIRED COMPONENTS","components"],
+  ["PROTOTYPE PLAN","prototypePlan"],
+  ["RISKS AND SAFETY","risks"],
+  ["2D SYSTEM DIAGRAM","diagram2D"],
+  ["3D DESIGN CONCEPT","model3D"],
+  ["OPENSCAD 3D MODEL CODE","openscadCode"],
+  ["RESEARCH REQUIRED","researchNeeded"]
+ ];
+
+ lastAnswer=sections
+  .map(([title,id])=>title+"\n"+$(id).textContent)
+  .join("\n\n");
 }
 
-STRICT RULES:
-- Write all answers in the selected language.
-- Answer the actual question. Do not give unrelated advice.
-- Keep the answer concise, clear and useful.
-- Do not invent facts, prices, research or sources.
-- Give only solutions that relate directly to the problem.
-- If the problem is unclear, say what information is missing.
-- Ask at most ONE essential clarification question when necessary.
-- Do not pretend a suggestion is a proven solution.
-- For medical problems, do not diagnose. Mention urgent warning signs and professional care where appropriate.
-- For legal, financial and safety topics, clearly state important limitations.
-- For business or invention ideas, consider cost, feasibility and practical testing.
-- If three genuinely different solutions are not possible, say so instead of inventing unrelated ideas.
-- Action plan must contain simple steps the user can actually follow.
-`;
+/* Loading placeholders */
+function showLoading(){
+
+ const loading={
+  understanding:"Understanding the problem...",
+  solution:"Finding a direct answer...",
+  ideas:"Finding practical solutions...",
+  bestIdea:"Selecting the best idea...",
+  actionPlan:"Preparing an action plan...",
+  innovationConcept:"Developing innovation concept...",
+  feasibility:"Checking scientific feasibility...",
+  components:"Identifying components...",
+  prototypePlan:"Preparing prototype plan...",
+  risks:"Checking risks and safety...",
+  diagram2D:"Preparing 2D system diagram...",
+  model3D:"Preparing 3D design concept...",
+  openscadCode:"Preparing OpenSCAD code...",
+  researchNeeded:"Identifying research requirements..."
+ };
+
+ for(const id in loading){
+  $(id).textContent=loading[id];
+ }
 }
 
 /* Main analysis */
 async function analyze(){
+
+ if(isAnalyzing)return;
+
  const problem=$("problem").value.trim();
 
  if(!problem){
@@ -386,125 +595,98 @@ async function analyze(){
   return;
  }
 
+ if(!navigator.onLine){
+  setStatus(T().offline,true);
+  return;
+ }
+
+ isAnalyzing=true;
  $("analyzeBtn").disabled=true;
+ $("analyzeBtn").textContent="Analyzing...";
  $("resultSection").style.display="block";
  $("copyStatus").textContent="";
  lastAnswer="";
 
- $("understanding").textContent="Understanding your problem...";
- $("solution").textContent="Finding the correct answer...";
- $("ideas").textContent="Finding relevant solutions...";
- $("bestIdea").textContent="Selecting the best idea...";
- $("actionPlan").textContent="Preparing practical steps...";
-
- if(!navigator.onLine){
-  $("solution").textContent=T().offline;
-  setStatus(T().offline,true);
-  $("analyzeBtn").disabled=false;
-  return;
- }
-
+ showLoading();
  setStatus(T().connecting);
 
  try{
-  const raw=await askAI(buildPrompt(problem));
+
+  const raw=await askAI(problem);
   const result=parseAnswer(raw);
 
   if(!result){
-   $("understanding").textContent=
-    "AI returned an unstructured response.";
-
-   $("solution").textContent=raw;
-   $("ideas").textContent=
-    "Structured ideas were not available.";
-   $("bestIdea").textContent=
-    "Could not identify a best idea.";
-   $("actionPlan").textContent=
-    "Please try Analyze again.";
-
-   lastAnswer=raw;
-  }else{
-   $("understanding").textContent=
-    result.understanding || "Not provided.";
-
-   $("solution").textContent=
-    result.solution || "No direct answer was provided.";
-
-   $("ideas").textContent=
-    result.ideas.length
-     ? result.ideas.map((x,i)=>(i+1)+". "+x).join("\n\n")
-     : "No separate practical solutions were provided.";
-
-   $("bestIdea").textContent=
-    result.bestIdea || "No best idea was identified.";
-
-   $("actionPlan").textContent=
-    result.actionPlan || "No action plan was provided.";
-
-   lastAnswer=
-    "PROBLEM UNDERSTANDING\n"+
-    $("understanding").textContent+
-    "\n\nDIRECT ANSWER\n"+
-    $("solution").textContent+
-    "\n\n3 PRACTICAL SOLUTIONS\n"+
-    $("ideas").textContent+
-    "\n\nBEST IDEA\n"+
-    $("bestIdea").textContent+
-    "\n\nACTION PLAN\n"+
-    $("actionPlan").textContent;
+   throw new Error(
+    "AI response was not valid JSON. Please try again."
+   );
   }
 
+  displayAnswer(result);
   setStatus(T().success);
 
  }catch(error){
-  console.error(error);
+
+  console.error("AI ERROR:",error);
+
+  const message=
+   error.message==="NO_INTERNET"
+    ? T().offline
+    : error.message;
 
   $("understanding").textContent=
    "Analysis could not be completed.";
 
-  $("solution").textContent=
-   error.message==="NO_INTERNET"
-    ? T().offline
-    : "AI connection error: "+error.message;
-
+  $("solution").textContent=message;
   $("ideas").textContent="Not available.";
   $("bestIdea").textContent="Not available.";
-  $("actionPlan").textContent="Please check the connection and try again.";
+  $("actionPlan").textContent="Check the error and try again.";
 
-  setStatus(T().failed+" "+error.message,true);
+  lastAnswer="";
+
+  setStatus(T().failed+" "+message,true);
 
  }finally{
+
+  isAnalyzing=false;
   $("analyzeBtn").disabled=false;
+  $("analyzeBtn").textContent="Analyze Problem";
  }
 }
 
-/* Voice input */
+/* Stop voice recognition */
 function stopVoice(){
+
  if(recognition){
-  try{recognition.stop();}catch(error){}
+  try{
+   recognition.stop();
+  }catch(error){}
+
   recognition=null;
  }
+
  $("speakBtn").disabled=false;
 }
 
+/* Start voice recognition */
 function startVoice(){
+
  const SpeechRecognition=
-  window.SpeechRecognition || window.webkitSpeechRecognition;
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
 
  if(!SpeechRecognition){
-  setStatus("Voice input is not supported in this browser.",true);
+  setStatus(
+   "Voice input is not supported in this browser.",
+   true
+  );
   return;
  }
 
  stopVoice();
 
  recognition=new SpeechRecognition();
-
- recognition.lang={
-  English:"en-IN",
-  Telugu:"te-IN",
-  Hindi:"hi-IN"
- }[$("language").value];
+ recognition.lang=
+  voiceLanguages[$("language").value] || "en-IN";
 
  recognition.continuous=false;
  recognition.interimResults=true;
@@ -515,10 +697,13 @@ function startVoice(){
  };
 
  recognition.onresult=event=>{
+
   let text="";
+
   for(let i=0;i<event.results.length;i++){
    text+=event.results[i][0].transcript+" ";
   }
+
   $("problem").value=text.trim();
  };
 
@@ -535,33 +720,54 @@ function startVoice(){
   recognition.start();
  }catch(error){
   stopVoice();
-  setStatus("Could not start microphone: "+error.message,true);
+  setStatus("Could not start microphone.",true);
  }
 }
 
-/* Copy complete result */
+/* Copy complete answer */
 async function copyAnswer(){
+
  if(!lastAnswer){
   $("copyStatus").textContent=T().noAnswer;
   return;
  }
 
  try{
-  await navigator.clipboard.writeText(lastAnswer);
+
+  if(navigator.clipboard && window.isSecureContext){
+   await navigator.clipboard.writeText(lastAnswer);
+  }else{
+   const temp=document.createElement("textarea");
+   temp.value=lastAnswer;
+   temp.style.position="fixed";
+   temp.style.opacity="0";
+   document.body.appendChild(temp);
+   temp.select();
+
+   const copied=document.execCommand("copy");
+   temp.remove();
+
+   if(!copied)throw new Error("Copy unavailable");
+  }
+
   $("copyStatus").textContent=T().copied;
+
  }catch(error){
+
   $("copyStatus").textContent=
    "Copy failed. Please select and copy manually.";
  }
 }
 
-/* Events */
+/* Event listeners */
 $("analyzeBtn").addEventListener("click",analyze);
 $("speakBtn").addEventListener("click",startVoice);
+
 $("stopBtn").addEventListener("click",()=>{
  stopVoice();
  setStatus(T().stopped);
 });
+
 $("copyBtn").addEventListener("click",copyAnswer);
 
 $("language").addEventListener("change",()=>{
