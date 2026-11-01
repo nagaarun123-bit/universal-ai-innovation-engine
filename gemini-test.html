@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini AI Connection Test</title>
+<style>
+body {
+  background: #071426;
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 25px;
+}
+h2 { color: #38d9c5; }
+textarea {
+  width: 100%;
+  height: 110px;
+  background: #10243c;
+  color: white;
+  border: 1px solid #345;
+  padding: 12px;
+  box-sizing: border-box;
+}
+button {
+  background: #13b8a6;
+  color: #061525;
+  border: 0;
+  padding: 13px 22px;
+  margin-top: 12px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#answer {
+  white-space: pre-wrap;
+  background: #10243c;
+  padding: 15px;
+  margin-top: 20px;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<h2>Universal AI Innovation Engine</h2>
+<p>Gemini Backend Connection Test</p>
+
+<textarea id="problem"
+placeholder="Ask any question...">Why does a solar light work at night?</textarea>
+
+<br>
+<button id="askButton" onclick="askAI()">Ask Gemini AI</button>
+
+<div id="answer">AI answer will appear here.</div>
+
+<script>
+async function askAI() {
+  const problem = document.getElementById("problem").value.trim();
+  const answer = document.getElementById("answer");
+  const button = document.getElementById("askButton");
+
+  if (!problem) {
+    answer.textContent = "Please enter a question.";
+    return;
+  }
+
+  button.disabled = true;
+  answer.textContent = "Connecting to Gemini AI...";
+
+  try {
+    const response = await fetch(
+      "https://universal-ai-engine.nagaarun123.workers.dev",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          problem: problem,
+          language: "English",
+          level: "Practical"
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.details || data.error || "AI request failed");
+    }
+
+    answer.textContent = data.answer;
+
+  } catch (error) {
+    answer.textContent = "Connection error: " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>

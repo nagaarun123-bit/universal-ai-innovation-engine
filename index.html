@@ -1,0 +1,581 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>Universal AI Innovation Engine V2.1</title>
+
+<style>
+:root{
+ --bg:#07111f;
+ --panel:#101e31;
+ --text:#eaf2ff;
+ --muted:#9aabc2;
+ --teal:#21d4c2;
+ --blue:#3988ff;
+ --border:#263c56;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ padding:18px 12px 35px;
+ background:linear-gradient(145deg,#07111f,#101a31);
+ color:var(--text);
+ font-family:Arial,sans-serif;
+}
+.container{max-width:760px;margin:auto}
+header{text-align:center;margin:10px 0 22px}
+h1{font-size:25px;margin:0 0 7px}
+.version{font-size:13px;color:var(--teal)}
+.subtitle{font-size:14px;color:var(--muted);margin-top:8px}
+.section{
+ background:var(--panel);
+ border:1px solid var(--border);
+ border-radius:12px;
+ padding:15px;
+ margin:13px 0;
+}
+h2{font-size:17px;margin:0 0 12px}
+label{
+ display:block;
+ font-size:13px;
+ color:#c7d8ed;
+ margin-bottom:7px;
+}
+select,textarea{
+ width:100%;
+ background:#091626;
+ color:var(--text);
+ border:1px solid var(--border);
+ border-radius:8px;
+ padding:12px;
+ font-size:15px;
+}
+textarea{
+ min-height:115px;
+ resize:vertical;
+ line-height:1.5;
+}
+button{
+ border:0;
+ border-radius:8px;
+ padding:12px 15px;
+ font-size:14px;
+ font-weight:600;
+ cursor:pointer;
+ background:var(--teal);
+ color:#06131e;
+}
+button:disabled{opacity:.5;cursor:not-allowed}
+.secondary{background:#263d59;color:#eaf2ff}
+.blue{background:var(--blue);color:white}
+.main{width:100%;margin-top:13px;font-size:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.row{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:12px;
+ margin-top:13px;
+}
+.output{
+ background:#091626;
+ border:1px solid var(--border);
+ border-radius:8px;
+ padding:13px;
+ white-space:pre-wrap;
+ overflow-wrap:anywhere;
+ line-height:1.6;
+ font-size:14px;
+ min-height:42px;
+}
+.result-title{
+ font-size:14px;
+ color:var(--teal);
+ font-weight:bold;
+ margin:16px 0 7px;
+}
+.status{
+ font-size:13px;
+ color:var(--muted);
+ margin-top:10px;
+ min-height:18px;
+}
+#resultSection{display:none}
+footer{
+ text-align:center;
+ color:#7588a2;
+ font-size:12px;
+ margin-top:20px;
+}
+@media(max-width:550px){
+ body{padding:12px 9px 25px}
+ h1{font-size:22px}
+ .row{grid-template-columns:1fr}
+ .section{padding:13px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+ <h1>Universal AI Innovation Engine</h1>
+ <div class="version">V2.1 — Simple AI Problem Solver</div>
+ <div class="subtitle">
+ Understand problems. Find solutions. Create practical ideas.
+ </div>
+ <div class="version" id="connection">Checking connection...</div>
+</header>
+
+<section class="section">
+ <h2>1. Language / భాష / भाषा</h2>
+ <select id="language">
+  <option value="English">English</option>
+  <option value="Telugu">తెలుగు</option>
+  <option value="Hindi">हिंदी</option>
+ </select>
+</section>
+
+<section class="section">
+ <h2>2. Describe Your Problem</h2>
+ <label for="problem">Type or speak your question or problem.</label>
+
+ <textarea id="problem"
+ placeholder="Example: My shop loses money because products expire before selling."></textarea>
+
+ <div class="controls" style="margin-top:10px">
+  <button class="secondary" id="speakBtn">🎤 Speak Problem</button>
+  <button class="secondary" id="stopBtn">Stop Listening</button>
+ </div>
+
+ <div class="row">
+  <div>
+   <label for="level">Solution Level</label>
+   <select id="level">
+    <option>Easy</option>
+    <option selected>Practical</option>
+    <option>Advanced</option>
+   </select>
+  </div>
+ </div>
+
+ <button class="main" id="analyzeBtn">Analyze Problem</button>
+ <div class="status" id="status" aria-live="polite"></div>
+</section>
+
+<section class="section" id="resultSection">
+ <h2>3. Your Solution</h2>
+
+ <div class="result-title">Problem Understanding</div>
+ <div class="output" id="understanding"></div>
+
+ <div class="result-title">Direct Answer / పరిష్కారం</div>
+ <div class="output" id="solution"></div>
+
+ <div class="result-title">3 Practical Solutions</div>
+ <div class="output" id="ideas"></div>
+
+ <div class="result-title">Best Idea</div>
+ <div class="output" id="bestIdea"></div>
+
+ <div class="result-title">Action Plan — What to Do Next</div>
+ <div class="output" id="actionPlan"></div>
+
+ <div class="controls" style="margin-top:14px">
+  <button class="blue" id="copyBtn">Copy Complete Answer</button>
+ </div>
+ <div class="status" id="copyStatus"></div>
+</section>
+
+<footer>Universal AI Innovation Engine · V2.1</footer>
+
+</div>
+
+<script>
+"use strict";
+
+const AI_ENDPOINT =
+ "https://universal-ai-engine.nagaarun123.workers.dev";
+
+const $ = id => document.getElementById(id);
+
+let lastAnswer = "";
+let recognition = null;
+
+const messages = {
+ English:{
+  empty:"Please describe your problem first.",
+  connecting:"Analyzing your problem with Gemini AI...",
+  success:"Analysis completed.",
+  failed:"AI connection failed. Please try again.",
+  offline:"Internet connection unavailable. Connect and try again.",
+  copied:"Answer copied.",
+  noAnswer:"Analyze a problem first.",
+  listening:"Listening... Speak now.",
+  stopped:"Voice input stopped."
+ },
+ Telugu:{
+  empty:"ముందుగా మీ సమస్యను వివరించండి.",
+  connecting:"Gemini AI మీ సమస్యను విశ్లేషిస్తోంది...",
+  success:"విశ్లేషణ పూర్తయింది.",
+  failed:"AI కనెక్షన్ విఫలమైంది. మళ్లీ ప్రయత్నించండి.",
+  offline:"Internet లేదు. కనెక్ట్ చేసి మళ్లీ ప్రయత్నించండి.",
+  copied:"సమాధానం కాపీ అయింది.",
+  noAnswer:"ముందుగా సమస్యను Analyze చేయండి.",
+  listening:"వింటోంది... ఇప్పుడు మాట్లాడండి.",
+  stopped:"Voice input ఆగింది."
+ },
+ Hindi:{
+  empty:"कृपया पहले अपनी समस्या लिखें।",
+  connecting:"Gemini AI आपकी समस्या का विश्लेषण कर रहा है...",
+  success:"विश्लेषण पूरा हुआ।",
+  failed:"AI कनेक्शन विफल हुआ। फिर कोशिश करें।",
+  offline:"इंटरनेट उपलब्ध नहीं है। दोबारा कोशिश करें।",
+  copied:"उत्तर कॉपी हो गया।",
+  noAnswer:"पहले समस्या का विश्लेषण करें।",
+  listening:"सुन रहा है... अब बोलें।",
+  stopped:"Voice input बंद हो गया।"
+ }
+};
+
+const T = () =>
+ messages[$("language").value] || messages.English;
+
+function setStatus(message,error=false){
+ $("status").textContent=message;
+ $("status").style.color=error?"#ff7777":"#9aabc2";
+}
+
+function updateConnection(){
+ $("connection").textContent =
+ navigator.onLine
+ ? "● Internet Connected"
+ : "● Offline";
+}
+
+window.addEventListener("online",updateConnection);
+window.addEventListener("offline",updateConnection);
+updateConnection();
+
+/* Secure Gemini request through Cloudflare Worker */
+async function askAI(prompt){
+ if(!navigator.onLine)throw new Error("NO_INTERNET");
+
+ const controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(),60000);
+
+ try{
+  const response=await fetch(AI_ENDPOINT,{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   cache:"no-store",
+   signal:controller.signal,
+   body:JSON.stringify({
+    problem:prompt,
+    language:$("language").value,
+    level:$("level").value
+   })
+  });
+
+  let data;
+  try{
+   data=await response.json();
+  }catch{
+   throw new Error("Invalid response from AI server.");
+  }
+
+  if(!response.ok || data.success===false){
+   throw new Error(
+    data.error || data.details || "HTTP "+response.status
+   );
+  }
+
+  const answer=
+   typeof data.answer==="string" ? data.answer :
+   typeof data.text==="string" ? data.text : "";
+
+  if(!answer.trim()){
+   throw new Error("AI returned an empty answer.");
+  }
+
+  return answer.trim();
+
+ }finally{
+  clearTimeout(timer);
+ }
+}
+
+/* Read structured JSON from Gemini */
+function parseAnswer(raw){
+ let content=raw.trim()
+  .replace(/^```json\s*/i,"")
+  .replace(/^```\s*/,"")
+  .replace(/\s*```$/,"");
+
+ try{
+  const data=JSON.parse(content);
+
+  return {
+   understanding:String(data.understanding||"").trim(),
+   solution:String(data.solution||"").trim(),
+   ideas:Array.isArray(data.ideas)
+    ? data.ideas.map(x=>String(x).trim()).filter(Boolean).slice(0,3)
+    : [],
+   bestIdea:String(data.bestIdea||"").trim(),
+   actionPlan:String(data.actionPlan||"").trim()
+  };
+ }catch{
+  return null;
+ }
+}
+
+function buildPrompt(problem){
+ return `
+You are Universal AI Innovation Engine, a practical problem-solving AI.
+
+USER PROBLEM:
+${problem}
+
+LANGUAGE: ${$("language").value}
+SOLUTION LEVEL: ${$("level").value}
+
+Understand the exact problem before answering.
+
+Return ONLY valid JSON. No Markdown code fences.
+
+Use this exact structure:
+{
+ "understanding": "Short explanation of the actual problem.",
+ "solution": "Direct answer to the user's actual question.",
+ "ideas": [
+  "Relevant practical solution 1",
+  "Relevant practical solution 2",
+  "Relevant practical solution 3"
+ ],
+ "bestIdea": "Choose the strongest idea and explain briefly why it is best.",
+ "actionPlan": "1. First step. 2. Second step. 3. Third step."
+}
+
+STRICT RULES:
+- Write all answers in the selected language.
+- Answer the actual question. Do not give unrelated advice.
+- Keep the answer concise, clear and useful.
+- Do not invent facts, prices, research or sources.
+- Give only solutions that relate directly to the problem.
+- If the problem is unclear, say what information is missing.
+- Ask at most ONE essential clarification question when necessary.
+- Do not pretend a suggestion is a proven solution.
+- For medical problems, do not diagnose. Mention urgent warning signs and professional care where appropriate.
+- For legal, financial and safety topics, clearly state important limitations.
+- For business or invention ideas, consider cost, feasibility and practical testing.
+- If three genuinely different solutions are not possible, say so instead of inventing unrelated ideas.
+- Action plan must contain simple steps the user can actually follow.
+`;
+}
+
+/* Main analysis */
+async function analyze(){
+ const problem=$("problem").value.trim();
+
+ if(!problem){
+  setStatus(T().empty,true);
+  $("problem").focus();
+  return;
+ }
+
+ $("analyzeBtn").disabled=true;
+ $("resultSection").style.display="block";
+ $("copyStatus").textContent="";
+ lastAnswer="";
+
+ $("understanding").textContent="Understanding your problem...";
+ $("solution").textContent="Finding the correct answer...";
+ $("ideas").textContent="Finding relevant solutions...";
+ $("bestIdea").textContent="Selecting the best idea...";
+ $("actionPlan").textContent="Preparing practical steps...";
+
+ if(!navigator.onLine){
+  $("solution").textContent=T().offline;
+  setStatus(T().offline,true);
+  $("analyzeBtn").disabled=false;
+  return;
+ }
+
+ setStatus(T().connecting);
+
+ try{
+  const raw=await askAI(buildPrompt(problem));
+  const result=parseAnswer(raw);
+
+  if(!result){
+   $("understanding").textContent=
+    "AI returned an unstructured response.";
+
+   $("solution").textContent=raw;
+   $("ideas").textContent=
+    "Structured ideas were not available.";
+   $("bestIdea").textContent=
+    "Could not identify a best idea.";
+   $("actionPlan").textContent=
+    "Please try Analyze again.";
+
+   lastAnswer=raw;
+  }else{
+   $("understanding").textContent=
+    result.understanding || "Not provided.";
+
+   $("solution").textContent=
+    result.solution || "No direct answer was provided.";
+
+   $("ideas").textContent=
+    result.ideas.length
+     ? result.ideas.map((x,i)=>(i+1)+". "+x).join("\n\n")
+     : "No separate practical solutions were provided.";
+
+   $("bestIdea").textContent=
+    result.bestIdea || "No best idea was identified.";
+
+   $("actionPlan").textContent=
+    result.actionPlan || "No action plan was provided.";
+
+   lastAnswer=
+    "PROBLEM UNDERSTANDING\n"+
+    $("understanding").textContent+
+    "\n\nDIRECT ANSWER\n"+
+    $("solution").textContent+
+    "\n\n3 PRACTICAL SOLUTIONS\n"+
+    $("ideas").textContent+
+    "\n\nBEST IDEA\n"+
+    $("bestIdea").textContent+
+    "\n\nACTION PLAN\n"+
+    $("actionPlan").textContent;
+  }
+
+  setStatus(T().success);
+
+ }catch(error){
+  console.error(error);
+
+  $("understanding").textContent=
+   "Analysis could not be completed.";
+
+  $("solution").textContent=
+   error.message==="NO_INTERNET"
+    ? T().offline
+    : "AI connection error: "+error.message;
+
+  $("ideas").textContent="Not available.";
+  $("bestIdea").textContent="Not available.";
+  $("actionPlan").textContent="Please check the connection and try again.";
+
+  setStatus(T().failed+" "+error.message,true);
+
+ }finally{
+  $("analyzeBtn").disabled=false;
+ }
+}
+
+/* Voice input */
+function stopVoice(){
+ if(recognition){
+  try{recognition.stop();}catch(error){}
+  recognition=null;
+ }
+ $("speakBtn").disabled=false;
+}
+
+function startVoice(){
+ const SpeechRecognition=
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+
+ if(!SpeechRecognition){
+  setStatus("Voice input is not supported in this browser.",true);
+  return;
+ }
+
+ stopVoice();
+
+ recognition=new SpeechRecognition();
+
+ recognition.lang={
+  English:"en-IN",
+  Telugu:"te-IN",
+  Hindi:"hi-IN"
+ }[$("language").value];
+
+ recognition.continuous=false;
+ recognition.interimResults=true;
+
+ recognition.onstart=()=>{
+  $("speakBtn").disabled=true;
+  setStatus(T().listening);
+ };
+
+ recognition.onresult=event=>{
+  let text="";
+  for(let i=0;i<event.results.length;i++){
+   text+=event.results[i][0].transcript+" ";
+  }
+  $("problem").value=text.trim();
+ };
+
+ recognition.onerror=event=>{
+  setStatus("Voice error: "+event.error,true);
+ };
+
+ recognition.onend=()=>{
+  $("speakBtn").disabled=false;
+  recognition=null;
+ };
+
+ try{
+  recognition.start();
+ }catch(error){
+  stopVoice();
+  setStatus("Could not start microphone: "+error.message,true);
+ }
+}
+
+/* Copy complete result */
+async function copyAnswer(){
+ if(!lastAnswer){
+  $("copyStatus").textContent=T().noAnswer;
+  return;
+ }
+
+ try{
+  await navigator.clipboard.writeText(lastAnswer);
+  $("copyStatus").textContent=T().copied;
+ }catch(error){
+  $("copyStatus").textContent=
+   "Copy failed. Please select and copy manually.";
+ }
+}
+
+/* Events */
+$("analyzeBtn").addEventListener("click",analyze);
+$("speakBtn").addEventListener("click",startVoice);
+$("stopBtn").addEventListener("click",()=>{
+ stopVoice();
+ setStatus(T().stopped);
+});
+$("copyBtn").addEventListener("click",copyAnswer);
+
+$("language").addEventListener("change",()=>{
+ stopVoice();
+});
+
+$("problem").addEventListener("keydown",event=>{
+ if(event.ctrlKey && event.key==="Enter"){
+  analyze();
+ }
+});
+
+window.addEventListener("beforeunload",stopVoice);
+
+</script>
+</body>
+</html>
