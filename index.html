@@ -5,134 +5,89 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07111f">
-<meta name="description" content="Universal AI Innovation Engine - AI Problem Solver and Innovation Assistant">
-<title>Universal AI Innovation Engine V2.6</title>
+<meta name="description" content="Universal AI Innovation Engine V3.0">
+<title>Universal AI Innovation Engine V3.0</title>
 
 <style>
 :root{
  --bg:#07111f;
  --panel:#101e31;
+ --panel2:#091626;
  --text:#eaf2ff;
  --muted:#9aabc2;
  --teal:#21d4c2;
  --blue:#3988ff;
  --border:#263c56;
  --danger:#ff7777;
+ --amber:#ffbd59;
 }
 *{box-sizing:border-box}
 body{
- margin:0;
- padding:18px 12px 35px;
+ margin:0;padding:16px 12px 40px;
  background:linear-gradient(145deg,#07111f,#101a31);
- color:var(--text);
- font-family:Arial,sans-serif;
+ color:var(--text);font-family:Arial,sans-serif;
 }
-.container{max-width:820px;margin:auto}
-header{text-align:center;margin:10px 0 22px}
-h1{font-size:25px;margin:0 0 7px}
-.version{font-size:13px;color:var(--teal)}
-.subtitle{font-size:14px;color:var(--muted);margin-top:8px}
+.container{max-width:1000px;margin:auto}
+header{text-align:center;padding:15px 0 20px}
+h1{font-size:26px;margin:0 0 8px}
+h2{font-size:18px;margin:0 0 14px}
+h3{font-size:14px;color:var(--teal);margin:20px 0 8px}
+.subtitle,.muted{color:var(--muted);font-size:13px}
+.version{color:var(--teal);font-size:13px}
 .section{
  background:var(--panel);
  border:1px solid var(--border);
  border-radius:12px;
- padding:15px;
- margin:13px 0;
+ padding:16px;margin:13px 0;
 }
-h2{font-size:17px;margin:0 0 12px}
-label{
- display:block;
- font-size:13px;
- color:#c7d8ed;
- margin-bottom:7px;
-}
-select,textarea{
- width:100%;
- background:#091626;
- color:var(--text);
+label{display:block;font-size:13px;margin:12px 0 7px;color:#c7d8ed}
+select,textarea,input{
+ width:100%;padding:12px;border-radius:8px;
  border:1px solid var(--border);
- border-radius:8px;
- padding:12px;
+ background:var(--panel2);color:var(--text);
  font-size:15px;
 }
-textarea{
- min-height:125px;
- resize:vertical;
- line-height:1.5;
-}
+textarea{min-height:130px;resize:vertical;line-height:1.5}
 button{
- border:0;
- border-radius:8px;
- padding:12px 15px;
- font-size:14px;
- font-weight:600;
- cursor:pointer;
- background:var(--teal);
- color:#06131e;
+ padding:12px 16px;border:0;border-radius:8px;
+ background:var(--teal);color:#06131e;
+ font-weight:bold;font-size:14px;cursor:pointer;
 }
 button:disabled{opacity:.5;cursor:not-allowed}
-.secondary{background:#263d59;color:#eaf2ff}
+.secondary{background:#263d59;color:white}
 .blue{background:var(--blue);color:white}
-.main{
- width:100%;
- margin-top:13px;
- font-size:16px;
+.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.main{width:100%;margin-top:15px;font-size:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{
+ background:var(--panel2);border:1px solid var(--border);
+ border-radius:9px;padding:13px;min-width:0;
 }
-.controls{display:flex;gap:8px;flex-wrap:wrap}
-.row{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:12px;
- margin-top:13px;
-}
+.field h3{margin:0 0 9px}
 .output{
- background:#091626;
- border:1px solid var(--border);
- border-radius:8px;
- padding:13px;
- white-space:pre-wrap;
- overflow-wrap:anywhere;
- line-height:1.6;
- font-size:14px;
- min-height:42px;
+ white-space:pre-wrap;overflow-wrap:anywhere;
+ line-height:1.6;font-size:14px;color:var(--text);
 }
-pre.output{
- font-family:Consolas,monospace;
- overflow-x:auto;
- white-space:pre;
+.code{
+ font-family:Consolas,monospace;white-space:pre;
+ overflow:auto;font-size:12px;
 }
-.result-title{
- font-size:14px;
- color:var(--teal);
- font-weight:bold;
- margin:16px 0 7px;
+.status{font-size:13px;color:var(--muted);margin-top:12px;min-height:20px}
+#results{display:none}
+#diagram,#viewer{
+ width:100%;min-height:260px;background:#091626;
+ border:1px solid var(--border);border-radius:9px;
+ overflow:auto;padding:10px;
 }
-.status{
- font-size:13px;
- color:var(--muted);
- margin-top:10px;
- min-height:18px;
- overflow-wrap:anywhere;
-}
-#resultSection{display:none}
-.hint{
- color:var(--muted);
- font-size:12px;
- line-height:1.5;
- margin-top:8px;
-}
-footer{
- text-align:center;
- color:#7588a2;
- font-size:12px;
- margin-top:20px;
-}
-@media(max-width:550px){
- body{padding:12px 9px 25px}
+#viewer{height:380px;padding:0}
+#diagram svg{max-width:100%;height:auto}
+.warning{color:var(--amber);font-size:12px;line-height:1.5}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:25px}
+@media(max-width:650px){
+ .grid{grid-template-columns:1fr}
  h1{font-size:22px}
- .row{grid-template-columns:1fr}
  .section{padding:13px}
- button{min-height:42px}
+ #viewer{height:300px}
 }
 </style>
 </head>
@@ -142,646 +97,450 @@ footer{
 
 <header>
  <h1>Universal AI Innovation Engine</h1>
- <div class="version">V2.6 — AI Innovation Assistant</div>
- <div class="subtitle">
- Understand Problems · Discover Solutions · Develop Inventions
- </div>
+ <div class="version">V3.0 — AI Invention & Product Design Studio</div>
+ <p class="subtitle">
+ Understand Problems · Invent Solutions · Design · Prototype · Test
+ </p>
  <div class="version" id="connection">Checking connection...</div>
 </header>
 
 <section class="section">
- <h2>1. Language / భాష / भाषा</h2>
+ <h2>1. Language / భాష</h2>
  <select id="language">
-  <option value="English">English</option>
-  <option value="Telugu">తెలుగు</option>
-  <option value="Hindi">हिंदी</option>
-  <option value="Tamil">தமிழ்</option>
-  <option value="Malayalam">മലയാളം</option>
-  <option value="Kannada">ಕನ್ನಡ</option>
+  <option>English</option>
+  <option>Telugu</option>
+  <option>Hindi</option>
+  <option>Tamil</option>
+  <option>Malayalam</option>
+  <option>Kannada</option>
  </select>
-</section>
 
-<section class="section">
- <h2>2. Describe Your Problem</h2>
+ <h2 style="margin-top:20px">2. Describe Your Problem</h2>
+ <textarea id="problem" placeholder="Describe your real-world problem or invention idea..."></textarea>
 
- <label for="problem">
- Type or speak your question, challenge or invention idea.
- </label>
-
- <textarea
-  id="problem"
-  placeholder="Example: My village faces water shortage during summer."
- ></textarea>
-
- <div class="controls" style="margin-top:10px">
+ <div class="controls">
   <button class="secondary" id="speakBtn">🎤 Speak Problem</button>
   <button class="secondary" id="stopBtn">Stop Listening</button>
  </div>
 
- <div class="row">
-  <div>
-   <label for="level">Solution Level</label>
-   <select id="level">
-    <option value="Easy">Easy</option>
-    <option value="Practical" selected>Practical</option>
-    <option value="Advanced">Advanced</option>
-   </select>
-  </div>
- </div>
+ <label for="level">Solution Level</label>
+ <select id="level">
+  <option>Easy</option>
+  <option selected>Practical</option>
+  <option>Advanced</option>
+ </select>
 
- <button class="main" id="analyzeBtn">
-  Analyze Problem
- </button>
-
- <div class="hint">
-  Tip: Describe the actual problem clearly. More details can help produce more useful solutions.
-  Press Ctrl + Enter to analyze.
- </div>
-
+ <button class="main" id="analyzeBtn">🚀 Analyze & Create Innovation</button>
  <div class="status" id="status" aria-live="polite"></div>
+ <p class="muted">Describe the actual problem clearly. Internet connection is required for AI analysis.</p>
 </section>
 
-<section class="section" id="resultSection">
- <h2>3. AI Analysis & Innovation Results</h2>
-
- <div class="result-title">Problem Understanding</div>
- <div class="output" id="understanding"></div>
-
- <div class="result-title">Direct Answer / పరిష్కారం</div>
- <div class="output" id="solution"></div>
-
- <div class="result-title">3 Practical Solutions</div>
- <div class="output" id="ideas"></div>
-
- <div class="result-title">Best Idea</div>
- <div class="output" id="bestIdea"></div>
-
- <div class="result-title">Action Plan — What to Do Next</div>
- <div class="output" id="actionPlan"></div>
-
- <div class="result-title">Innovation Concept — కొత్త ఆవిష్కరణ</div>
- <div class="output" id="innovationConcept"></div>
-
- <div class="result-title">Scientific Feasibility — సాధ్యాసాధ్యత</div>
- <div class="output" id="feasibility"></div>
-
- <div class="result-title">Required Components — అవసరమైన వస్తువులు</div>
- <div class="output" id="components"></div>
-
- <div class="result-title">Prototype Plan — నమూనా తయారీ</div>
- <div class="output" id="prototypePlan"></div>
-
- <div class="result-title">Risks & Safety — ప్రమాదాలు మరియు భద్రత</div>
- <div class="output" id="risks"></div>
-
- <div class="result-title">2D System Diagram — Mermaid</div>
- <div class="output" id="diagram2D"></div>
-
- <div class="result-title">3D Design Concept</div>
- <div class="output" id="model3D"></div>
-
- <div class="result-title">OpenSCAD 3D Model Code</div>
- <pre class="output" id="openscadCode"></pre>
-
- <div class="result-title">Research Required</div>
- <div class="output" id="researchNeeded"></div>
-
- <div class="controls" style="margin-top:14px">
-  <button class="blue" id="copyBtn">Copy Complete Answer</button>
+<section class="section" id="results">
+ <h2>3. AI Innovation Results</h2>
+ <div class="grid">
+  <div class="field"><h3>Problem Understanding</h3><div class="output" id="understanding"></div></div>
+  <div class="field"><h3>Direct Solution</h3><div class="output" id="solution"></div></div>
+  <div class="field"><h3>Innovation Concepts</h3><div class="output" id="ideas"></div></div>
+  <div class="field"><h3>Best Idea</h3><div class="output" id="bestIdea"></div></div>
+  <div class="field"><h3>Action Plan</h3><div class="output" id="actionPlan"></div></div>
+  <div class="field"><h3>Innovation Concept</h3><div class="output" id="innovationConcept"></div></div>
+  <div class="field"><h3>Scientific Feasibility</h3><div class="output" id="feasibility"></div></div>
+  <div class="field"><h3>Engineering Design</h3><div class="output" id="components"></div></div>
+  <div class="field"><h3>Dimensions</h3><div class="output" id="dimensions"></div></div>
+  <div class="field"><h3>Materials</h3><div class="output" id="materials"></div></div>
+  <div class="field"><h3>Bill of Materials (BOM)</h3><div class="output" id="bom"></div></div>
+  <div class="field"><h3>Supplier Research</h3><div class="output" id="suppliers"></div></div>
+  <div class="field"><h3>Prototype Plan</h3><div class="output" id="prototypePlan"></div></div>
+  <div class="field"><h3>Risks & Safety</h3><div class="output" id="risks"></div></div>
+  <div class="field"><h3>3D Design Concept</h3><div class="output" id="model3D"></div></div>
+  <div class="field"><h3>3D Parts</h3><div class="output" id="parts3D"></div></div>
+  <div class="field"><h3>Assembly Steps</h3><div class="output" id="assemblySteps"></div></div>
+  <div class="field"><h3>Testing Plan</h3><div class="output" id="testingPlan"></div></div>
+  <div class="field"><h3>Maintenance</h3><div class="output" id="maintenance"></div></div>
+  <div class="field"><h3>Energy Analysis</h3><div class="output" id="energyAnalysis"></div></div>
+  <div class="field"><h3>Research Required</h3><div class="output" id="researchNeeded"></div></div>
  </div>
 
+ <h3>4. 2D System Diagram</h3>
+ <div id="diagram"><div class="muted">AI diagram will appear here.</div></div>
+
+ <div class="controls">
+  <button class="secondary" id="diagramCodeBtn">Show 2D Diagram Code</button>
+ </div>
+ <pre class="output code" id="diagramCode" style="display:none"></pre>
+
+ <h3>5. Interactive 3D Concept Viewer</h3>
+ <div id="viewer"><div style="padding:20px;color:#9aabc2">3D concept will appear here when available.</div></div>
+ <div class="controls">
+  <button class="secondary" id="reset3D">Reset 3D View</button>
+ </div>
+ <p class="warning">
+  Note: This is a conceptual 3D visualization based on AI-provided parts.
+  It is not a verified manufacturing CAD model. Confirm dimensions and engineering safety before building.
+ </p>
+
+ <h3>6. OpenSCAD Model Code</h3>
+ <pre class="output code" id="openscadCode"></pre>
+ <div class="controls">
+  <button class="secondary" id="copyCodeBtn">Copy OpenSCAD Code</button>
+  <button class="blue" id="copyAllBtn">Copy Complete Report</button>
+ </div>
  <div class="status" id="copyStatus"></div>
 </section>
 
-<footer>
- Universal AI Innovation Engine · V2.6
-</footer>
-
+<footer>Universal AI Innovation Engine V3.0 · AI-assisted concept development</footer>
 </div>
 
 <script>
 "use strict";
 
-/* Cloudflare Worker endpoint */
-const AI_ENDPOINT =
- "https://universal-ai-engine.nagaarun123.workers.dev";
+const AI_ENDPOINT="https://universal-ai-engine.nagaarun123.workers.dev";
+const $=id=>document.getElementById(id);
 
-const $ = id => document.getElementById(id);
+let lastReport="";
+let lastOpenSCAD="";
+let lastDiagram="";
+let recognition=null;
+let threeState=null;
+let analyzing=false;
 
-let lastAnswer = "";
-let recognition = null;
-let isAnalyzing = false;
+const fields=[
+ "understanding","solution","ideas","bestIdea","actionPlan",
+ "innovationConcept","feasibility","components","dimensions",
+ "materials","bom","suppliers","prototypePlan","risks",
+ "model3D","parts3D","assemblySteps","testingPlan",
+ "maintenance","energyAnalysis","researchNeeded"
+];
 
-/* Language messages */
-const messages = {
- English:{
-  empty:"Please describe your problem first.",
-  connecting:"Connecting to AI. Please wait...",
-  success:"Analysis completed successfully.",
-  failed:"AI request failed:",
-  offline:"Internet connection unavailable.",
-  copied:"Complete answer copied successfully.",
-  noAnswer:"Analyze a problem first.",
-  listening:"Listening... Speak now.",
-  stopped:"Voice input stopped."
- },
- Telugu:{
-  empty:"ముందుగా మీ సమస్యను వివరించండి.",
-  connecting:"AI కి కనెక్ట్ అవుతోంది. దయచేసి వేచి ఉండండి...",
-  success:"విశ్లేషణ పూర్తయింది.",
-  failed:"AI అభ్యర్థన విఫలమైంది:",
-  offline:"ఇంటర్నెట్ కనెక్షన్ లేదు.",
-  copied:"పూర్తి సమాధానం కాపీ అయింది.",
-  noAnswer:"ముందుగా సమస్యను Analyze చేయండి.",
-  listening:"వింటోంది... ఇప్పుడు మాట్లాడండి.",
-  stopped:"వాయిస్ ఇన్‌పుట్ ఆగింది."
- },
- Hindi:{
-  empty:"कृपया पहले अपनी समस्या लिखें।",
-  connecting:"AI से जुड़ रहा है। कृपया प्रतीक्षा करें...",
-  success:"विश्लेषण पूरा हुआ।",
-  failed:"AI अनुरोध विफल:",
-  offline:"इंटरनेट उपलब्ध नहीं है।",
-  copied:"पूरा उत्तर कॉपी हो गया।",
-  noAnswer:"पहले समस्या का विश्लेषण करें।",
-  listening:"सुन रहा है... अब बोलें।",
-  stopped:"वॉइस इनपुट बंद हो गया।"
- },
- Tamil:{
-  empty:"முதலில் உங்கள் பிரச்சினையை விவரிக்கவும்.",
-  connecting:"AI உடன் இணைக்கப்படுகிறது. காத்திருக்கவும்...",
-  success:"பகுப்பாய்வு முடிந்தது.",
-  failed:"AI கோரிக்கை தோல்வியடைந்தது:",
-  offline:"இணைய இணைப்பு இல்லை.",
-  copied:"முழு பதிலும் நகலெடுக்கப்பட்டது.",
-  noAnswer:"முதலில் ஒரு பிரச்சினையை பகுப்பாய்வு செய்யவும்.",
-  listening:"கேட்கிறது... இப்போது பேசவும்.",
-  stopped:"குரல் உள்ளீடு நிறுத்தப்பட்டது."
- },
- Malayalam:{
-  empty:"ആദ്യം നിങ്ങളുടെ പ്രശ്നം വിവരിക്കുക.",
-  connecting:"AI-യുമായി ബന്ധിപ്പിക്കുന്നു. കാത്തിരിക്കുക...",
-  success:"വിശകലനം പൂർത്തിയായി.",
-  failed:"AI അഭ്യർത്ഥന പരാജയപ്പെട്ടു:",
-  offline:"ഇന്റർനെറ്റ് കണക്ഷൻ ലഭ്യമല്ല.",
-  copied:"മുഴുവൻ ഉത്തരവും പകർത്തി.",
-  noAnswer:"ആദ്യം ഒരു പ്രശ്നം വിശകലനം ചെയ്യുക.",
-  listening:"കേൾക്കുന്നു... ഇപ്പോൾ സംസാരിക്കുക.",
-  stopped:"ശബ്ദ ഇൻപുട്ട് നിർത്തി."
- },
- Kannada:{
-  empty:"ಮೊದಲು ನಿಮ್ಮ ಸಮಸ್ಯೆಯನ್ನು ವಿವರಿಸಿ.",
-  connecting:"AI ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ. ದಯವಿಟ್ಟು ಕಾಯಿರಿ...",
-  success:"ವಿಶ್ಲೇಷಣೆ ಪೂರ್ಣಗೊಂಡಿದೆ.",
-  failed:"AI ವಿನಂತಿ ವಿಫಲವಾಗಿದೆ:",
-  offline:"ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕ ಲಭ್ಯವಿಲ್ಲ.",
-  copied:"ಪೂರ್ಣ ಉತ್ತರವನ್ನು ನಕಲಿಸಲಾಗಿದೆ.",
-  noAnswer:"ಮೊದಲು ಸಮಸ್ಯೆಯನ್ನು ವಿಶ್ಲೇಷಿಸಿ.",
-  listening:"ಕೇಳುತ್ತಿದೆ... ಈಗ ಮಾತನಾಡಿ.",
-  stopped:"ಧ್ವನಿ ಇನ್‌ಪುಟ್ ನಿಲ್ಲಿಸಲಾಗಿದೆ."
- }
-};
-
-const T = () =>
- messages[$("language").value] || messages.English;
-
-/* Voice recognition language codes */
-const voiceLanguages = {
- English:"en-IN",
- Telugu:"te-IN",
- Hindi:"hi-IN",
- Tamil:"ta-IN",
- Malayalam:"ml-IN",
- Kannada:"kn-IN"
-};
-
-/* Connection status */
-function updateConnection(){
- const online=navigator.onLine;
-
- $("connection").textContent =
-  online ? "● Internet Connected" : "● Offline";
-
- $("connection").style.color =
-  online ? "#21d4c2" : "#ff7777";
-}
-
-window.addEventListener("online",updateConnection);
-window.addEventListener("offline",updateConnection);
-updateConnection();
-
-/* Status display */
-function setStatus(message,error=false){
+function showStatus(message,error=false){
  $("status").textContent=message;
- $("status").style.color=
-  error ? "#ff7777" : "#9aabc2";
+ $("status").style.color=error?"#ff7777":"#9aabc2";
 }
 
-/* Ask Cloudflare Worker */
-async function askAI(problem){
+function checkConnection(){
+ $("connection").textContent=navigator.onLine?
+  "● Internet Connected":"● Offline";
+ $("connection").style.color=navigator.onLine?"#21d4c2":"#ff7777";
+}
+window.addEventListener("online",checkConnection);
+window.addEventListener("offline",checkConnection);
+checkConnection();
 
- if(!navigator.onLine){
-  throw new Error("NO_INTERNET");
- }
-
- let response;
-
- try{
-  response=await fetch(AI_ENDPOINT,{
-   method:"POST",
-   headers:{
-    "Content-Type":"application/json"
-   },
-   cache:"no-store",
-   body:JSON.stringify({
-    problem:problem,
-    language:$("language").value,
-    level:$("level").value
-   })
-  });
- }catch(error){
-  throw new Error(
-   "Could not reach the AI server. Check your internet connection."
-  );
- }
-
- let data;
-
- try{
-  data=await response.json();
- }catch(error){
-  throw new Error(
-   "Server returned invalid data. HTTP " + response.status
-  );
- }
-
- if(!response.ok || data.success===false){
-  const detail=
-   data.details || data.error || "Unknown server error";
-
-  throw new Error(
-   "HTTP " + response.status + ": " + detail
-  );
- }
-
- let answer =
-  typeof data.answer==="string" ? data.answer :
-  typeof data.text==="string" ? data.text :
-  data.answer && typeof data.answer==="object"
-   ? JSON.stringify(data.answer)
-   : "";
-
- if(!answer.trim()){
-  throw new Error("AI returned an empty answer.");
- }
-
- return answer.trim();
+function readable(value){
+ if(value===null||value===undefined)return "";
+ if(typeof value==="string")return value.trim();
+ if(Array.isArray(value))return value.map(readable).filter(Boolean).join("\n");
+ if(typeof value==="object")return JSON.stringify(value,null,2);
+ return String(value);
 }
 
-/* Parse AI JSON response */
-function parseAnswer(raw){
-
+function parseAIResponse(raw){
  let content=String(raw).trim()
   .replace(/^```json\s*/i,"")
   .replace(/^```\s*/,"")
   .replace(/\s*```$/,"");
-
- try{
-  const data=JSON.parse(content);
-
-  const toText=value=>{
-   if(value===null || value===undefined)return "";
-   if(typeof value==="string")return value.trim();
-
-   if(typeof value==="object"){
-    return JSON.stringify(value,null,2);
-   }
-
-   return String(value).trim();
-  };
-
-  const toArray=value=>{
-   if(!Array.isArray(value))return [];
-
-   return value
-    .map(toText)
-    .filter(Boolean);
-  };
-
-  return {
-   understanding:toText(data.understanding),
-   solution:toText(data.solution),
-   ideas:toArray(data.ideas).slice(0,3),
-   bestIdea:toText(data.bestIdea),
-   actionPlan:toText(data.actionPlan),
-   innovationConcept:toText(data.innovationConcept),
-   feasibility:toText(data.feasibility),
-   components:toArray(data.components),
-   prototypePlan:toText(data.prototypePlan),
-   risks:toArray(data.risks),
-   diagram2D:toText(data.diagram2D),
-   model3D:toText(data.model3D),
-   openscadCode:toText(data.openscadCode),
-   researchNeeded:toText(data.researchNeeded)
-  };
-
- }catch(error){
-  console.error("AI response parsing error:",error);
-  return null;
- }
+ const data=JSON.parse(content);
+ const result={};
+ for(const key of fields)result[key]=readable(data[key]);
+ return {result,data};
 }
 
-/* Display AI result safely */
-function displayAnswer(result){
+function displayResults(result){
+ for(const key of fields){
+  $(key).textContent=result[key]||"Not provided by AI.";
+ }
 
- const show=(id,value,fallback="Not provided.")=>{
-  $(id).textContent=value || fallback;
+ lastOpenSCAD=result.openscadCode||"";
+ lastDiagram=result.diagram2D||"";
+ $("diagramCode").textContent=lastDiagram;
+ $("openscadCode").textContent=lastOpenSCAD;
+
+ const titles={
+ understanding:"PROBLEM UNDERSTANDING",
+ solution:"DIRECT SOLUTION",
+ ideas:"INNOVATION CONCEPTS",
+ bestIdea:"BEST IDEA",
+ actionPlan:"ACTION PLAN",
+ innovationConcept:"INNOVATION CONCEPT",
+ feasibility:"SCIENTIFIC FEASIBILITY",
+ components:"ENGINEERING DESIGN / COMPONENTS",
+ dimensions:"DIMENSIONS",
+ materials:"MATERIALS",
+ bom:"BILL OF MATERIALS",
+ suppliers:"SUPPLIER RESEARCH",
+ prototypePlan:"PROTOTYPE PLAN",
+ risks:"RISKS AND SAFETY",
+ model3D:"3D DESIGN CONCEPT",
+ parts3D:"3D PARTS",
+ assemblySteps:"ASSEMBLY STEPS",
+ testingPlan:"TESTING PLAN",
+ maintenance:"MAINTENANCE",
+ energyAnalysis:"ENERGY ANALYSIS",
+ researchNeeded:"RESEARCH REQUIRED"
  };
 
- show("understanding",result.understanding);
- show("solution",result.solution,"No direct answer provided.");
+ lastReport=Object.entries(titles)
+  .map(([key,title])=>title+"\n"+($(key).textContent||""))
+  .join("\n\n")+"\n\n2D DIAGRAM\n"+lastDiagram+
+  "\n\nOPENSCAD CODE\n"+lastOpenSCAD;
 
- show(
-  "ideas",
-  result.ideas.length
-   ? result.ideas.map((x,i)=>(i+1)+". "+x).join("\n\n")
-   : "",
-  "No separate solutions provided."
- );
-
- show("bestIdea",result.bestIdea);
- show("actionPlan",result.actionPlan);
- show("innovationConcept",result.innovationConcept);
- show("feasibility",result.feasibility);
-
- show(
-  "components",
-  result.components.length
-   ? result.components.map((x,i)=>(i+1)+". "+x).join("\n")
-   : ""
- );
-
- show("prototypePlan",result.prototypePlan);
-
- show(
-  "risks",
-  result.risks.length
-   ? result.risks.map((x,i)=>(i+1)+". "+x).join("\n")
-   : ""
- );
-
- show("diagram2D",result.diagram2D,"Diagram not provided.");
- show("model3D",result.model3D,"3D design not provided.");
- show("openscadCode",result.openscadCode,"OpenSCAD code not provided.");
- show("researchNeeded",result.researchNeeded,"Research details not provided.");
-
- const sections=[
-  ["PROBLEM UNDERSTANDING","understanding"],
-  ["DIRECT ANSWER","solution"],
-  ["PRACTICAL SOLUTIONS","ideas"],
-  ["BEST IDEA","bestIdea"],
-  ["ACTION PLAN","actionPlan"],
-  ["INNOVATION CONCEPT","innovationConcept"],
-  ["SCIENTIFIC FEASIBILITY","feasibility"],
-  ["REQUIRED COMPONENTS","components"],
-  ["PROTOTYPE PLAN","prototypePlan"],
-  ["RISKS AND SAFETY","risks"],
-  ["2D SYSTEM DIAGRAM","diagram2D"],
-  ["3D DESIGN CONCEPT","model3D"],
-  ["OPENSCAD 3D MODEL CODE","openscadCode"],
-  ["RESEARCH REQUIRED","researchNeeded"]
- ];
-
- lastAnswer=sections
-  .map(([title,id])=>title+"\n"+$(id).textContent)
-  .join("\n\n");
+ $("results").style.display="block";
+ $("copyStatus").textContent="";
 }
 
-/* Loading placeholders */
-function showLoading(){
+async function askAI(problem){
+ const response=await fetch(AI_ENDPOINT,{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  cache:"no-store",
+  body:JSON.stringify({
+   problem,
+   language:$("language").value,
+   level:$("level").value
+  })
+ });
 
- const loading={
-  understanding:"Understanding the problem...",
-  solution:"Finding a direct answer...",
-  ideas:"Finding practical solutions...",
-  bestIdea:"Selecting the best idea...",
-  actionPlan:"Preparing an action plan...",
-  innovationConcept:"Developing innovation concept...",
-  feasibility:"Checking scientific feasibility...",
-  components:"Identifying components...",
-  prototypePlan:"Preparing prototype plan...",
-  risks:"Checking risks and safety...",
-  diagram2D:"Preparing 2D system diagram...",
-  model3D:"Preparing 3D design concept...",
-  openscadCode:"Preparing OpenSCAD code...",
-  researchNeeded:"Identifying research requirements..."
- };
+ let data;
+ try{data=await response.json();}
+ catch(e){throw new Error("Server returned invalid JSON. HTTP "+response.status);}
 
- for(const id in loading){
-  $(id).textContent=loading[id];
+ if(!response.ok||data.success===false){
+  throw new Error(data.details||data.error||("HTTP "+response.status));
  }
+
+ const answer=typeof data.answer==="string"?data.answer:
+  data.answer&&typeof data.answer==="object"?JSON.stringify(data.answer):"";
+
+ if(!answer.trim())throw new Error("AI returned an empty answer.");
+ return answer;
 }
 
-/* Main analysis */
 async function analyze(){
-
- if(isAnalyzing)return;
-
+ if(analyzing)return;
  const problem=$("problem").value.trim();
 
  if(!problem){
-  setStatus(T().empty,true);
+  showStatus("Please describe your problem first.",true);
   $("problem").focus();
   return;
  }
-
  if(!navigator.onLine){
-  setStatus(T().offline,true);
+  showStatus("Internet connection unavailable.",true);
   return;
  }
 
- isAnalyzing=true;
+ analyzing=true;
  $("analyzeBtn").disabled=true;
- $("analyzeBtn").textContent="Analyzing...";
- $("resultSection").style.display="block";
- $("copyStatus").textContent="";
- lastAnswer="";
-
- showLoading();
- setStatus(T().connecting);
+ $("analyzeBtn").textContent="Analyzing... Please wait";
+ $("results").style.display="block";
+ for(const key of fields)$(key).textContent="AI is preparing this section...";
+ $("diagram").textContent="Preparing 2D diagram...";
+ $("viewer").textContent="Preparing 3D concept...";
+ $("openscadCode").textContent="";
+ showStatus("Connecting to AI...");
 
  try{
-
   const raw=await askAI(problem);
-  const result=parseAnswer(raw);
-
-  if(!result){
-   throw new Error(
-    "AI response was not valid JSON. Please try again."
-   );
-  }
-
-  displayAnswer(result);
-  setStatus(T().success);
-
+  const parsed=parseAIResponse(raw);
+  displayResults(parsed.result);
+  showStatus("AI analysis completed successfully. Model: "+(parsed.data.model||"AI"));
+  renderDiagram(lastDiagram);
+  render3D(parsed.data.parts3D);
  }catch(error){
-
-  console.error("AI ERROR:",error);
-
-  const message=
-   error.message==="NO_INTERNET"
-    ? T().offline
-    : error.message;
-
-  $("understanding").textContent=
-   "Analysis could not be completed.";
-
-  $("solution").textContent=message;
-  $("ideas").textContent="Not available.";
-  $("bestIdea").textContent="Not available.";
-  $("actionPlan").textContent="Check the error and try again.";
-
-  lastAnswer="";
-
-  setStatus(T().failed+" "+message,true);
-
+  console.error(error);
+  showStatus("AI ERROR: "+error.message,true);
+  $("diagram").textContent="Diagram unavailable.";
+  $("viewer").textContent="3D concept unavailable.";
  }finally{
-
-  isAnalyzing=false;
+  analyzing=false;
   $("analyzeBtn").disabled=false;
-  $("analyzeBtn").textContent="Analyze Problem";
+  $("analyzeBtn").textContent="🚀 Analyze & Create Innovation";
  }
 }
 
-/* Stop voice recognition */
+/* Optional Mermaid diagram renderer */
+async function renderDiagram(code){
+ if(!code){
+  $("diagram").textContent="AI did not provide a diagram.";
+  return;
+ }
+ try{
+  const module=await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs");
+  const mermaid=module.default;
+  mermaid.initialize({startOnLoad:false,theme:"dark",securityLevel:"strict"});
+  const cleaned=code.replace(/```mermaid/gi,"").replace(/```/g,"").trim();
+  const rendered=await mermaid.render("innovationDiagram",cleaned);
+  $("diagram").innerHTML=rendered.svg;
+ }catch(error){
+  $("diagram").textContent=code;
+ }
+}
+
+/* Interactive conceptual 3D viewer */
+async function render3D(parts){
+ const viewer=$("viewer");
+ viewer.innerHTML="";
+ try{
+  const THREE=await import("https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js");
+  const controlsModule=await import("https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js");
+
+  const scene=new THREE.Scene();
+  scene.background=new THREE.Color("#091626");
+
+  const camera=new THREE.PerspectiveCamera(45,1,0.1,1000);
+  camera.position.set(6,5,8);
+
+  const renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  viewer.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff,2));
+  const light=new THREE.DirectionalLight(0xffffff,2);
+  light.position.set(5,8,6);
+  scene.add(light);
+
+  const grid=new THREE.GridHelper(12,12,0x3988ff,0x263c56);
+  scene.add(grid);
+
+  const orbit=new controlsModule.OrbitControls(camera,renderer.domElement);
+  orbit.enableDamping=true;
+
+  const rawParts=Array.isArray(parts)?parts:[];
+  const count=Math.max(1,Math.min(rawParts.length,20));
+
+  for(let i=0;i<count;i++){
+   const item=rawParts[i];
+   const name=typeof item==="string"?item:
+    item&&typeof item==="object"?(item.name||item.part||("Part "+(i+1))):"Part "+(i+1);
+
+   const size=item&&typeof item==="object"&&Array.isArray(item.size)?item.size:[1.2,0.6,0.8];
+   const sx=Number(size[0])>0?Math.min(Number(size[0]),4):1.2;
+   const sy=Number(size[1])>0?Math.min(Number(size[1]),4):0.6;
+   const sz=Number(size[2])>0?Math.min(Number(size[2]),4):0.8;
+
+   const geometry=new THREE.BoxGeometry(sx,sy,sz);
+   const material=new THREE.MeshStandardMaterial({
+    color:new THREE.Color().setHSL((i*0.13+0.48)%1,0.65,0.55),
+    metalness:0.25,roughness:0.55
+   });
+   const mesh=new THREE.Mesh(geometry,material);
+   const columns=4;
+   mesh.position.set((i%columns)*1.8-2.7,sy/2,Math.floor(i/columns)*1.5-1.5);
+   scene.add(mesh);
+  }
+
+  function resize(){
+   const width=Math.max(viewer.clientWidth,250);
+   const height=Math.max(viewer.clientHeight,250);
+   camera.aspect=width/height;
+   camera.updateProjectionMatrix();
+   renderer.setSize(width,height);
+  }
+  resize();
+
+  let active=true;
+  function animate(){
+   if(!active)return;
+   requestAnimationFrame(animate);
+   orbit.update();
+   renderer.render(scene,camera);
+  }
+  animate();
+
+  threeState={scene,camera,renderer,orbit,resize,stop:()=>{active=false;}};
+  $("viewer").dataset.ready="true";
+ }catch(error){
+  console.error("3D viewer:",error);
+  viewer.textContent="3D viewer could not load. Check internet connection or browser WebGL support. The written 3D design concept is shown above.";
+ }
+}
+
+$("reset3D").addEventListener("click",()=>{
+ if(!threeState)return;
+ threeState.camera.position.set(6,5,8);
+ threeState.orbit.target.set(0,0,0);
+ threeState.orbit.update();
+});
+
+$("diagramCodeBtn").addEventListener("click",()=>{
+ const box=$("diagramCode");
+ box.style.display=box.style.display==="none"?"block":"none";
+});
+
+async function copyText(text){
+ if(!text){$("copyStatus").textContent="Nothing to copy.";return;}
+ try{
+  await navigator.clipboard.writeText(text);
+  $("copyStatus").textContent="Copied successfully.";
+ }catch(e){
+  $("copyStatus").textContent="Copy failed. Please copy manually.";
+ }
+}
+$("copyCodeBtn").addEventListener("click",()=>copyText(lastOpenSCAD));
+$("copyAllBtn").addEventListener("click",()=>copyText(lastReport));
+$("analyzeBtn").addEventListener("click",analyze);
+
+$("problem").addEventListener("keydown",event=>{
+ if(event.ctrlKey&&event.key==="Enter")analyze();
+});
+
+/* Voice input */
+const voiceCodes={
+ English:"en-IN",Telugu:"te-IN",Hindi:"hi-IN",
+ Tamil:"ta-IN",Malayalam:"ml-IN",Kannada:"kn-IN"
+};
+
 function stopVoice(){
-
  if(recognition){
-  try{
-   recognition.stop();
-  }catch(error){}
-
+  try{recognition.stop();}catch(e){}
   recognition=null;
  }
-
  $("speakBtn").disabled=false;
 }
 
-/* Start voice recognition */
-function startVoice(){
-
- const SpeechRecognition=
-  window.SpeechRecognition ||
-  window.webkitSpeechRecognition;
-
- if(!SpeechRecognition){
-  setStatus(
-   "Voice input is not supported in this browser.",
-   true
-  );
+$("speakBtn").addEventListener("click",()=>{
+ const Speech=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!Speech){
+  showStatus("Voice input is not supported in this browser.",true);
   return;
  }
-
  stopVoice();
-
- recognition=new SpeechRecognition();
- recognition.lang=
-  voiceLanguages[$("language").value] || "en-IN";
-
+ recognition=new Speech();
+ recognition.lang=voiceCodes[$("language").value]||"en-IN";
  recognition.continuous=false;
  recognition.interimResults=true;
 
  recognition.onstart=()=>{
   $("speakBtn").disabled=true;
-  setStatus(T().listening);
+  showStatus("Listening... Speak now.");
  };
-
  recognition.onresult=event=>{
-
   let text="";
-
   for(let i=0;i<event.results.length;i++){
    text+=event.results[i][0].transcript+" ";
   }
-
   $("problem").value=text.trim();
  };
-
  recognition.onerror=event=>{
-  setStatus("Voice error: "+event.error,true);
+  showStatus("Voice error: "+event.error,true);
  };
-
  recognition.onend=()=>{
-  $("speakBtn").disabled=false;
   recognition=null;
+  $("speakBtn").disabled=false;
  };
-
- try{
-  recognition.start();
- }catch(error){
-  stopVoice();
-  setStatus("Could not start microphone.",true);
- }
-}
-
-/* Copy complete answer */
-async function copyAnswer(){
-
- if(!lastAnswer){
-  $("copyStatus").textContent=T().noAnswer;
-  return;
- }
-
- try{
-
-  if(navigator.clipboard && window.isSecureContext){
-   await navigator.clipboard.writeText(lastAnswer);
-  }else{
-   const temp=document.createElement("textarea");
-   temp.value=lastAnswer;
-   temp.style.position="fixed";
-   temp.style.opacity="0";
-   document.body.appendChild(temp);
-   temp.select();
-
-   const copied=document.execCommand("copy");
-   temp.remove();
-
-   if(!copied)throw new Error("Copy unavailable");
-  }
-
-  $("copyStatus").textContent=T().copied;
-
- }catch(error){
-
-  $("copyStatus").textContent=
-   "Copy failed. Please select and copy manually.";
- }
-}
-
-/* Event listeners */
-$("analyzeBtn").addEventListener("click",analyze);
-$("speakBtn").addEventListener("click",startVoice);
+ try{recognition.start();}
+ catch(e){stopVoice();showStatus("Could not start microphone.",true);}
+});
 
 $("stopBtn").addEventListener("click",()=>{
  stopVoice();
- setStatus(T().stopped);
-});
-
-$("copyBtn").addEventListener("click",copyAnswer);
-
-$("language").addEventListener("change",()=>{
- stopVoice();
-});
-
-$("problem").addEventListener("keydown",event=>{
- if(event.ctrlKey && event.key==="Enter"){
-  analyze();
- }
+ showStatus("Voice input stopped.");
 });
 
 window.addEventListener("beforeunload",stopVoice);
-
+window.addEventListener("resize",()=>{
+ if(threeState)threeState.resize();
+});
 </script>
 </body>
 </html>
