@@ -1,0 +1,13 @@
+{
+  "name": "Universal AI Innovation Engine",
+  "short_name": "AI Innovator",
+  "description": "Online and offline AI innovation assistant",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "lang": "en",
+  "categories": ["productivity", "education", "utilities"]
+}

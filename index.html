@@ -90,6 +90,10 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin-top:25px}
  #viewer{height:300px}
 }
 </style>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#07111f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <script type="importmap">
 {
@@ -548,6 +552,15 @@ window.addEventListener("beforeunload",stopVoice);
 window.addEventListener("resize",()=>{
  if(threeState)threeState.resize();
 });
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(() => console.log("Offline App Cache Ready"))
+      .catch(error => console.error("Service Worker Error:", error));
+  });
+}
 </script>
 </body>
 </html>
