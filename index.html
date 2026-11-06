@@ -145,7 +145,32 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin-top:25px}
  <div class="status" id="status" aria-live="polite"></div>
  <p class="muted">Describe the actual problem clearly. Internet connection is required for AI analysis.</p>
 </section>
+<section class="section" id="savedProjects">
+  <h2>📁 My Saved Projects</h2>
 
+  <p class="muted">
+    Save and access your invention ideas anytime on this device.
+  </p>
+
+  <input
+    type="text"
+    id="projectName"
+    placeholder="Enter project name..."
+  >
+
+  <div class="controls">
+    <button id="saveProjectBtn">💾 Save Current Project</button>
+    <button class="secondary" id="loadProjectBtn">📂 Load Selected</button>
+    <button class="secondary" id="deleteProjectBtn">🗑️ Delete Selected</button>
+  </div>
+
+  <label for="savedProjectList">Saved Projects</label>
+  <select id="savedProjectList">
+    <option value="">No saved projects yet</option>
+  </select>
+
+  <div class="status" id="projectStatus"></div>
+</section>
 <section class="section" id="results">
  <h2>3. AI Innovation Results</h2>
  <div class="grid">
@@ -561,6 +586,158 @@ if ("serviceWorker" in navigator) {
       .catch(error => console.error("Service Worker Error:", error));
   });
 }
+</script>
+<script>
+"use strict";
+
+const PROJECT_STORAGE_KEY = "uai-engine-saved-projects-v4";
+
+function getSavedProjects() {
+  try {
+    return JSON.parse(localStorage.getItem(PROJECT_STORAGE_KEY) || "[]");
+  } catch (error) {
+    return [];
+  }
+}
+
+function updateProjectList() {
+  const list = document.getElementById("savedProjectList");
+  const projects = getSavedProjects();
+
+  list.innerHTML = "";
+
+  if (projects.length === 0) {
+    list.add(new Option("No saved projects yet", ""));
+    return;
+  }
+
+  projects.forEach(project => {
+    list.add(new Option(project.name, project.id));
+  });
+}
+
+function saveCurrentProject() {
+  const name = document.getElementById("projectName").value.trim();
+  const status = document.getElementById("projectStatus");
+
+  if (!name) {
+    status.textContent = "Please enter a project name.";
+    return;
+  }
+
+  if (!document.getElementById("results").style.display ||
+      document.getElementById("results").style.display === "none") {
+    status.textContent = "Analyze a problem before saving.";
+    return;
+  }
+
+  const project = {
+    id: String(Date.now()),
+    name: name,
+    date: new Date().toLocaleString(),
+    problem: document.getElementById("problem").value,
+    language: document.getElementById("language").value,
+    level: document.getElementById("level").value,
+    fields: {},
+    diagram: document.getElementById("diagramCode").textContent,
+    openscad: document.getElementById("openscadCode").textContent
+  };
+
+  fields.forEach(key => {
+    project.fields[key] = document.getElementById(key).textContent;
+  });
+
+  try {
+    const projects = getSavedProjects();
+    projects.unshift(project);
+
+    localStorage.setItem(
+      PROJECT_STORAGE_KEY,
+      JSON.stringify(projects)
+    );
+
+    updateProjectList();
+    document.getElementById("savedProjectList").value = project.id;
+    status.textContent = "Project saved successfully!";
+  } catch (error) {
+    status.textContent = "Storage error: " + error.message;
+  }
+}
+
+function loadSelectedProject() {
+  const id = document.getElementById("savedProjectList").value;
+  const status = document.getElementById("projectStatus");
+  const project = getSavedProjects().find(item => item.id === id);
+
+  if (!project) {
+    status.textContent = "Please select a saved project.";
+    return;
+  }
+
+  document.getElementById("projectName").value = project.name;
+  document.getElementById("problem").value = project.problem || "";
+  document.getElementById("language").value = project.language || "English";
+  document.getElementById("level").value = project.level || "Practical";
+
+  fields.forEach(key => {
+    document.getElementById(key).textContent =
+      project.fields[key] || "";
+  });
+
+  document.getElementById("diagramCode").textContent = project.diagram || "";
+  document.getElementById("openscadCode").textContent = project.openscad || "";
+
+  lastDiagram = project.diagram || "";
+  lastOpenSCAD = project.openscad || "";
+
+  document.getElementById("diagram").textContent =
+    lastDiagram || "No diagram saved.";
+
+  document.getElementById("viewer").textContent =
+    "Saved 3D text concept. Run a new analysis to rebuild the 3D viewer.";
+
+  document.getElementById("results").style.display = "block";
+
+  document.getElementById("diagramCode").style.display = "none";
+
+  lastReport = fields.map(key =>
+    key.toUpperCase() + "\n" +
+    document.getElementById(key).textContent
+  ).join("\n\n") + "\n\n2D DIAGRAM\n" + lastDiagram +
+    "\n\nOPENSCAD CODE\n" + lastOpenSCAD;
+
+  status.textContent = "Project loaded successfully!";
+}
+
+function deleteSelectedProject() {
+  const id = document.getElementById("savedProjectList").value;
+  const status = document.getElementById("projectStatus");
+
+  if (!id) {
+    status.textContent = "Please select a project to delete.";
+    return;
+  }
+
+  const projects = getSavedProjects().filter(item => item.id !== id);
+
+  localStorage.setItem(PROJECT_STORAGE_KEY, JSON.stringify(projects));
+
+  updateProjectList();
+  document.getElementById("projectName").value = "";
+
+  status.textContent = "Selected project deleted.";
+}
+
+document.getElementById("saveProjectBtn")
+  .addEventListener("click", saveCurrentProject);
+
+document.getElementById("loadProjectBtn")
+  .addEventListener("click", loadSelectedProject);
+
+document.getElementById("deleteProjectBtn")
+  .addEventListener("click", deleteSelectedProject);
+
+updateProjectList();
 </script>
 </body>
 </html>
