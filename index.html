@@ -1,743 +1,1221 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#07111f">
-<meta name="description" content="Universal AI Innovation Engine V3.0">
-<title>Universal AI Innovation Engine V3.0</title>
 
-<style>
-:root{
- --bg:#07111f;
- --panel:#101e31;
- --panel2:#091626;
- --text:#eaf2ff;
- --muted:#9aabc2;
- --teal:#21d4c2;
- --blue:#3988ff;
- --border:#263c56;
- --danger:#ff7777;
- --amber:#ffbd59;
-}
-*{box-sizing:border-box}
-body{
- margin:0;padding:16px 12px 40px;
- background:linear-gradient(145deg,#07111f,#101a31);
- color:var(--text);font-family:Arial,sans-serif;
-}
-.container{max-width:1000px;margin:auto}
-header{text-align:center;padding:15px 0 20px}
-h1{font-size:26px;margin:0 0 8px}
-h2{font-size:18px;margin:0 0 14px}
-h3{font-size:14px;color:var(--teal);margin:20px 0 8px}
-.subtitle,.muted{color:var(--muted);font-size:13px}
-.version{color:var(--teal);font-size:13px}
-.section{
- background:var(--panel);
- border:1px solid var(--border);
- border-radius:12px;
- padding:16px;margin:13px 0;
-}
-label{display:block;font-size:13px;margin:12px 0 7px;color:#c7d8ed}
-select,textarea,input{
- width:100%;padding:12px;border-radius:8px;
- border:1px solid var(--border);
- background:var(--panel2);color:var(--text);
- font-size:15px;
-}
-textarea{min-height:130px;resize:vertical;line-height:1.5}
-button{
- padding:12px 16px;border:0;border-radius:8px;
- background:var(--teal);color:#06131e;
- font-weight:bold;font-size:14px;cursor:pointer;
-}
-button:disabled{opacity:.5;cursor:not-allowed}
-.secondary{background:#263d59;color:white}
-.blue{background:var(--blue);color:white}
-.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
-.main{width:100%;margin-top:15px;font-size:16px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field{
- background:var(--panel2);border:1px solid var(--border);
- border-radius:9px;padding:13px;min-width:0;
-}
-.field h3{margin:0 0 9px}
-.output{
- white-space:pre-wrap;overflow-wrap:anywhere;
- line-height:1.6;font-size:14px;color:var(--text);
-}
-.code{
- font-family:Consolas,monospace;white-space:pre;
- overflow:auto;font-size:12px;
-}
-.status{font-size:13px;color:var(--muted);margin-top:12px;min-height:20px}
-#results{display:none}
-#diagram,#viewer{
- width:100%;min-height:260px;background:#091626;
- border:1px solid var(--border);border-radius:9px;
- overflow:auto;padding:10px;
-}
-#viewer{height:380px;padding:0}
-#diagram svg{max-width:100%;height:auto}
-.warning{color:var(--amber);font-size:12px;line-height:1.5}
-footer{text-align:center;color:var(--muted);font-size:12px;margin-top:25px}
-@media(max-width:650px){
- .grid{grid-template-columns:1fr}
- h1{font-size:22px}
- .section{padding:13px}
- #viewer{height:300px}
-}
-</style>
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#07111f">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-</head>
-<script type="importmap">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Universal AI Innovation Engine V3.0">
+  <title>Universal AI Innovation Engine V3.0</title>
+
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: #101e31;
+      --panel2: #091626;
+      --text: #eaf2ff;
+      --muted: #9aabc2;
+      --teal: #21d4c2;
+      --blue: #3988ff;
+      --border: #263c56;
+      --danger: #ff7777;
+      --amber: #ffbd59;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      padding: 16px 12px 40px;
+      background: linear-gradient(145deg, #07111f, #101a31);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto
+    }
+
+    header {
+      text-align: center;
+      padding: 15px 0 20px
+    }
+
+    h1 {
+      font-size: 26px;
+      margin: 0 0 8px
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 0 0 14px
+    }
+
+    h3 {
+      font-size: 14px;
+      color: var(--teal);
+      margin: 20px 0 8px
+    }
+
+    .subtitle,
+    .muted {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .version {
+      color: var(--teal);
+      font-size: 13px
+    }
+
+    .section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 13px 0;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin: 12px 0 7px;
+      color: #c7d8ed
+    }
+
+    select,
+    textarea,
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+      line-height: 1.5
+    }
+
+    button {
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--teal);
+      color: #06131e;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed
+    }
+
+    .secondary {
+      background: #263d59;
+      color: white
+    }
+
+    .blue {
+      background: var(--blue);
+      color: white
+    }
+
+    .controls {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-top: 12px
+    }
+
+    .main {
+      width: 100%;
+      margin-top: 15px;
+      font-size: 16px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .field {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 13px;
+      min-width: 0;
+    }
+
+    .field h3 {
+      margin: 0 0 9px
+    }
+
+    .output {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.6;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .code {
+      font-family: Consolas, monospace;
+      white-space: pre;
+      overflow: auto;
+      font-size: 12px;
+    }
+
+    .status {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 12px;
+      min-height: 20px
+    }
+
+    #results {
+      display: none
+    }
+
+    #diagram,
+    #viewer {
+      width: 100%;
+      min-height: 260px;
+      background: #091626;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      overflow: auto;
+      padding: 10px;
+    }
+
+    #viewer {
+      height: 380px;
+      padding: 0
+    }
+
+    #diagram svg {
+      max-width: 100%;
+      height: auto
+    }
+
+    .warning {
+      color: var(--amber);
+      font-size: 12px;
+      line-height: 1.5
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 25px
+    }
+
+    @media(max-width:650px) {
+      .grid {
+        grid-template-columns: 1fr
+      }
+
+      h1 {
+        font-size: 22px
+      }
+
+      .section {
+        padding: 13px
+      }
+
+      #viewer {
+        height: 300px
+      }
+    }
+  </style>
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#07111f">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <script type="importmap">
 {
   "imports": {
     "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
   }
 }
 </script>
+</head>
 
 <body>
-<div class="container">
+  <div class="container">
 
-<header>
- <h1>Universal AI Innovation Engine</h1>
- <div class="version">V3.0 — AI Invention & Product Design Studio</div>
- <p class="subtitle">
- Understand Problems · Invent Solutions · Design · Prototype · Test
- </p>
- <div class="version" id="connection">Checking connection...</div>
-</header>
+    <header>
+      <h1>Universal AI Innovation Engine</h1>
+      <div class="version">V3.0 — AI Invention & Product Design Studio</div>
+      <p class="subtitle">
+        Understand Problems · Invent Solutions · Design · Prototype · Test
+      </p>
+      <div class="version" id="connection">Checking connection...</div>
+    </header>
 
-<section class="section">
- <h2>1. Language / భాష</h2>
- <select id="language">
-  <option>English</option>
-  <option>Telugu</option>
-  <option>Hindi</option>
-  <option>Tamil</option>
-  <option>Malayalam</option>
-  <option>Kannada</option>
- </select>
+    <section class="section">
+      <h2>1. Language / భాష</h2>
+      <select id="language">
+        <option>English</option>
+        <option>Telugu</option>
+        <option>Hindi</option>
+        <option>Tamil</option>
+        <option>Malayalam</option>
+        <option>Kannada</option>
+      </select>
 
- <h2 style="margin-top:20px">2. Describe Your Problem</h2>
- <textarea id="problem" placeholder="Describe your real-world problem or invention idea..."></textarea>
+      <h2 style="margin-top:20px">2. Describe Your Problem</h2>
+      <textarea id="problem" placeholder="Describe your real-world problem or invention idea..."></textarea>
 
- <div class="controls">
-  <button class="secondary" id="speakBtn">🎤 Speak Problem</button>
-  <button class="secondary" id="stopBtn">Stop Listening</button>
- </div>
+      <div class="controls">
+        <button class="secondary" id="speakBtn">🎤 Speak Problem</button>
+        <button class="secondary" id="stopBtn">Stop Listening</button>
+      </div>
 
- <label for="level">Solution Level</label>
- <select id="level">
-  <option>Easy</option>
-  <option selected>Practical</option>
-  <option>Advanced</option>
- </select>
+      <label for="level">Solution Level</label>
+      <select id="level">
+        <option>Easy</option>
+        <option selected>Practical</option>
+        <option>Advanced</option>
+      </select>
 
- <button class="main" id="analyzeBtn">🚀 Analyze & Create Innovation</button>
- <div class="status" id="status" aria-live="polite"></div>
- <p class="muted">Describe the actual problem clearly. Internet connection is required for AI analysis.</p>
-</section>
-<section class="section" id="savedProjects">
-  <h2>📁 My Saved Projects</h2>
+      <button class="main" id="analyzeBtn">🚀 Analyze & Create Innovation</button>
+      <div class="status" id="status" aria-live="polite"></div>
+      <p class="muted">Describe the actual problem clearly. Internet connection is required for AI analysis.</p>
+    </section>
+    <section class="section" id="savedProjects">
+      <h2>📁 My Saved Projects</h2>
 
-  <p class="muted">
-    Save and access your invention ideas anytime on this device.
-  </p>
+      <p class="muted">
+        Save and access your invention ideas anytime on this device.
+      </p>
 
-  <input
-    type="text"
-    id="projectName"
-    placeholder="Enter project name..."
-  >
+      <input type="text" id="projectName" placeholder="Enter project name...">
 
-  <div class="controls">
-    <button id="saveProjectBtn">💾 Save Current Project</button>
-    <button class="secondary" id="loadProjectBtn">📂 Load Selected</button>
-    <button class="secondary" id="deleteProjectBtn">🗑️ Delete Selected</button>
+      <div class="controls">
+        <button id="saveProjectBtn">💾 Save Current Project</button>
+        <button class="secondary" id="loadProjectBtn">📂 Load Selected</button>
+        <button class="secondary" id="deleteProjectBtn">🗑️ Delete Selected</button>
+      </div>
+
+      <label for="savedProjectList">Saved Projects</label>
+      <select id="savedProjectList">
+        <option value="">No saved projects yet</option>
+      </select>
+
+      <div class="status" id="projectStatus"></div>
+    </section>
+    <section class="section" id="results">
+      <h2>3. AI Innovation Results</h2>
+      <div class="grid">
+        <div class="field">
+          <h3>Problem Understanding</h3>
+          <div class="output" id="understanding"></div>
+        </div>
+        <div class="field">
+          <h3>Direct Solution</h3>
+          <div class="output" id="solution"></div>
+        </div>
+        <div class="field">
+          <h3>Innovation Concepts</h3>
+          <div class="output" id="ideas"></div>
+        </div>
+        <div class="field">
+          <h3>Best Idea</h3>
+          <div class="output" id="bestIdea"></div>
+        </div>
+        <div class="field">
+          <h3>Action Plan</h3>
+          <div class="output" id="actionPlan"></div>
+        </div>
+        <div class="field">
+          <h3>Innovation Concept</h3>
+          <div class="output" id="innovationConcept"></div>
+        </div>
+        <div class="field">
+          <h3>Scientific Feasibility</h3>
+          <div class="output" id="feasibility"></div>
+        </div>
+        <div class="field">
+          <h3>Engineering Design</h3>
+          <div class="output" id="components"></div>
+        </div>
+        <div class="field">
+          <h3>Dimensions</h3>
+          <div class="output" id="dimensions"></div>
+        </div>
+        <div class="field">
+          <h3>Materials</h3>
+          <div class="output" id="materials"></div>
+        </div>
+        <div class="field">
+          <h3>Bill of Materials (BOM)</h3>
+          <div class="output" id="bom"></div>
+        </div>
+        <div class="field">
+          <h3>Supplier Research</h3>
+          <div class="output" id="suppliers"></div>
+        </div>
+        <div class="field">
+          <h3>Prototype Plan</h3>
+          <div class="output" id="prototypePlan"></div>
+        </div>
+        <div class="field">
+          <h3>Risks & Safety</h3>
+          <div class="output" id="risks"></div>
+        </div>
+        <div class="field">
+          <h3>3D Design Concept</h3>
+          <div class="output" id="model3D"></div>
+        </div>
+        <div class="field">
+          <h3>3D Parts</h3>
+          <div class="output" id="parts3D"></div>
+        </div>
+        <div class="field">
+          <h3>Assembly Steps</h3>
+          <div class="output" id="assemblySteps"></div>
+        </div>
+        <div class="field">
+          <h3>Testing Plan</h3>
+          <div class="output" id="testingPlan"></div>
+        </div>
+        <div class="field">
+          <h3>Maintenance</h3>
+          <div class="output" id="maintenance"></div>
+        </div>
+        <div class="field">
+          <h3>Energy Analysis</h3>
+          <div class="output" id="energyAnalysis"></div>
+        </div>
+        <div class="field">
+          <h3>Research Required</h3>
+          <div class="output" id="researchNeeded"></div>
+        </div>
+      </div>
+
+      <h3>4. 2D System Diagram</h3>
+      <div id="diagram">
+        <div class="muted">AI diagram will appear here.</div>
+      </div>
+
+      <div class="controls">
+        <button class="secondary" id="diagramCodeBtn">Show 2D Diagram Code</button>
+      </div>
+      <pre class="output code" id="diagramCode" style="display:none"></pre>
+
+      <h3>5. Interactive 3D Concept Viewer</h3>
+      <div id="viewer">
+        <div style="padding:20px;color:#9aabc2">3D concept will appear here when available.</div>
+      </div>
+      <div class="controls">
+        <button class="secondary" id="reset3D">Reset 3D View</button>
+      </div>
+      <p class="warning">
+        Note: This is a conceptual 3D visualization based on AI-provided parts.
+        It is not a verified manufacturing CAD model. Confirm dimensions and engineering safety before building.
+      </p>
+
+      <h3>6. OpenSCAD Model Code</h3>
+      <pre class="output code" id="openscadCode"></pre>
+      <div class="controls">
+        <button class="secondary" id="copyCodeBtn">Copy OpenSCAD Code</button>
+        <button class="blue" id="copyAllBtn">Copy Complete Report</button>
+      </div>
+      <div class="status" id="copyStatus"></div>
+    </section>
+
+    <footer>Universal AI Innovation Engine V3.0 · AI-assisted concept development</footer>
   </div>
 
-  <label for="savedProjectList">Saved Projects</label>
-  <select id="savedProjectList">
-    <option value="">No saved projects yet</option>
-  </select>
+  <script>
+    "use strict";
 
-  <div class="status" id="projectStatus"></div>
-</section>
-<section class="section" id="results">
- <h2>3. AI Innovation Results</h2>
- <div class="grid">
-  <div class="field"><h3>Problem Understanding</h3><div class="output" id="understanding"></div></div>
-  <div class="field"><h3>Direct Solution</h3><div class="output" id="solution"></div></div>
-  <div class="field"><h3>Innovation Concepts</h3><div class="output" id="ideas"></div></div>
-  <div class="field"><h3>Best Idea</h3><div class="output" id="bestIdea"></div></div>
-  <div class="field"><h3>Action Plan</h3><div class="output" id="actionPlan"></div></div>
-  <div class="field"><h3>Innovation Concept</h3><div class="output" id="innovationConcept"></div></div>
-  <div class="field"><h3>Scientific Feasibility</h3><div class="output" id="feasibility"></div></div>
-  <div class="field"><h3>Engineering Design</h3><div class="output" id="components"></div></div>
-  <div class="field"><h3>Dimensions</h3><div class="output" id="dimensions"></div></div>
-  <div class="field"><h3>Materials</h3><div class="output" id="materials"></div></div>
-  <div class="field"><h3>Bill of Materials (BOM)</h3><div class="output" id="bom"></div></div>
-  <div class="field"><h3>Supplier Research</h3><div class="output" id="suppliers"></div></div>
-  <div class="field"><h3>Prototype Plan</h3><div class="output" id="prototypePlan"></div></div>
-  <div class="field"><h3>Risks & Safety</h3><div class="output" id="risks"></div></div>
-  <div class="field"><h3>3D Design Concept</h3><div class="output" id="model3D"></div></div>
-  <div class="field"><h3>3D Parts</h3><div class="output" id="parts3D"></div></div>
-  <div class="field"><h3>Assembly Steps</h3><div class="output" id="assemblySteps"></div></div>
-  <div class="field"><h3>Testing Plan</h3><div class="output" id="testingPlan"></div></div>
-  <div class="field"><h3>Maintenance</h3><div class="output" id="maintenance"></div></div>
-  <div class="field"><h3>Energy Analysis</h3><div class="output" id="energyAnalysis"></div></div>
-  <div class="field"><h3>Research Required</h3><div class="output" id="researchNeeded"></div></div>
- </div>
+    const AI_ENDPOINT = "https://universal-ai-engine.nagaarun123.workers.dev";
+    const $ = id => document.getElementById(id);
 
- <h3>4. 2D System Diagram</h3>
- <div id="diagram"><div class="muted">AI diagram will appear here.</div></div>
+    let lastReport = "";
+    let lastOpenSCAD = "";
+    let lastDiagram = "";
+    let recognition = null;
+    let threeState = null;
+    let analyzing = false;
 
- <div class="controls">
-  <button class="secondary" id="diagramCodeBtn">Show 2D Diagram Code</button>
- </div>
- <pre class="output code" id="diagramCode" style="display:none"></pre>
+    const fields = [
+      "understanding", "solution", "ideas", "bestIdea", "actionPlan",
+      "innovationConcept", "feasibility", "components", "dimensions",
+      "materials", "bom", "suppliers", "prototypePlan", "risks",
+      "model3D", "parts3D", "assemblySteps", "testingPlan",
+      "maintenance", "energyAnalysis", "researchNeeded"
+    ];
 
- <h3>5. Interactive 3D Concept Viewer</h3>
- <div id="viewer"><div style="padding:20px;color:#9aabc2">3D concept will appear here when available.</div></div>
- <div class="controls">
-  <button class="secondary" id="reset3D">Reset 3D View</button>
- </div>
- <p class="warning">
-  Note: This is a conceptual 3D visualization based on AI-provided parts.
-  It is not a verified manufacturing CAD model. Confirm dimensions and engineering safety before building.
- </p>
+    function showStatus(message, error = false) {
+      $("status").textContent = message;
+      $("status").style.color = error ? "#ff7777" : "#9aabc2";
+    }
 
- <h3>6. OpenSCAD Model Code</h3>
- <pre class="output code" id="openscadCode"></pre>
- <div class="controls">
-  <button class="secondary" id="copyCodeBtn">Copy OpenSCAD Code</button>
-  <button class="blue" id="copyAllBtn">Copy Complete Report</button>
- </div>
- <div class="status" id="copyStatus"></div>
-</section>
+    function checkConnection() {
+      $("connection").textContent = navigator.onLine ?
+        "● Internet Connected" : "● Offline";
+      $("connection").style.color = navigator.onLine ? "#21d4c2" : "#ff7777";
+    }
+    window.addEventListener("online", checkConnection);
+    window.addEventListener("offline", checkConnection);
+    checkConnection();
 
-<footer>Universal AI Innovation Engine V3.0 · AI-assisted concept development</footer>
-</div>
+    function readable(value) {
+      if (value === null || value === undefined) return "";
+      if (typeof value === "string") return value.trim();
+      if (Array.isArray(value)) return value.map(readable).filter(Boolean).join("\n");
+      if (typeof value === "object") return JSON.stringify(value, null, 2);
+      return String(value);
+    }
 
-<script>
-"use strict";
+    function parseAIResponse(raw) {
+      let content = String(raw).trim()
+        .replace(/^```json\s*/i, "")
+        .replace(/^```\s*/, "")
+        .replace(/\s*```$/, "");
+      const data = JSON.parse(content);
+      const result = {};
+      for (const key of fields) result[key] = readable(data[key]);
 
-const AI_ENDPOINT="https://universal-ai-engine.nagaarun123.workers.dev";
-const $=id=>document.getElementById(id);
+      // Preserve 2D diagram and OpenSCAD code
+      result.diagram2D = readable(data.diagram2D);
+      result.openscadCode = readable(data.openscadCode);
 
-let lastReport="";
-let lastOpenSCAD="";
-let lastDiagram="";
-let recognition=null;
-let threeState=null;
-let analyzing=false;
+      return {result, data};
+    }
 
-const fields=[
- "understanding","solution","ideas","bestIdea","actionPlan",
- "innovationConcept","feasibility","components","dimensions",
- "materials","bom","suppliers","prototypePlan","risks",
- "model3D","parts3D","assemblySteps","testingPlan",
- "maintenance","energyAnalysis","researchNeeded"
-];
+    function displayResults(result) {
+      for (const key of fields) {
+        $(key).textContent = result[key] || "Not provided by AI.";
+      }
 
-function showStatus(message,error=false){
- $("status").textContent=message;
- $("status").style.color=error?"#ff7777":"#9aabc2";
-}
+      lastOpenSCAD = result.openscadCode || "";
+      lastDiagram = result.diagram2D || "";
+      $("diagramCode").textContent = lastDiagram;
+      $("openscadCode").textContent = lastOpenSCAD;
 
-function checkConnection(){
- $("connection").textContent=navigator.onLine?
-  "● Internet Connected":"● Offline";
- $("connection").style.color=navigator.onLine?"#21d4c2":"#ff7777";
-}
-window.addEventListener("online",checkConnection);
-window.addEventListener("offline",checkConnection);
-checkConnection();
+      const titles = {
+        understanding: "PROBLEM UNDERSTANDING",
+        solution: "DIRECT SOLUTION",
+        ideas: "INNOVATION CONCEPTS",
+        bestIdea: "BEST IDEA",
+        actionPlan: "ACTION PLAN",
+        innovationConcept: "INNOVATION CONCEPT",
+        feasibility: "SCIENTIFIC FEASIBILITY",
+        components: "ENGINEERING DESIGN / COMPONENTS",
+        dimensions: "DIMENSIONS",
+        materials: "MATERIALS",
+        bom: "BILL OF MATERIALS",
+        suppliers: "SUPPLIER RESEARCH",
+        prototypePlan: "PROTOTYPE PLAN",
+        risks: "RISKS AND SAFETY",
+        model3D: "3D DESIGN CONCEPT",
+        parts3D: "3D PARTS",
+        assemblySteps: "ASSEMBLY STEPS",
+        testingPlan: "TESTING PLAN",
+        maintenance: "MAINTENANCE",
+        energyAnalysis: "ENERGY ANALYSIS",
+        researchNeeded: "RESEARCH REQUIRED"
+      };
 
-function readable(value){
- if(value===null||value===undefined)return "";
- if(typeof value==="string")return value.trim();
- if(Array.isArray(value))return value.map(readable).filter(Boolean).join("\n");
- if(typeof value==="object")return JSON.stringify(value,null,2);
- return String(value);
-}
+      lastReport = Object.entries(titles)
+        .map(([key, title]) => title + "\n" + ($(key).textContent || ""))
+        .join("\n\n") + "\n\n2D DIAGRAM\n" + lastDiagram +
+        "\n\nOPENSCAD CODE\n" + lastOpenSCAD;
 
-function parseAIResponse(raw){
- let content=String(raw).trim()
-  .replace(/^```json\s*/i,"")
-  .replace(/^```\s*/,"")
-  .replace(/\s*```$/,"");
- const data=JSON.parse(content);
- const result={};
- for(const key of fields)result[key]=readable(data[key]);
- return {result,data};
-}
+      $("results").style.display = "block";
+      $("copyStatus").textContent = "";
+    }
 
-function displayResults(result){
- for(const key of fields){
-  $(key).textContent=result[key]||"Not provided by AI.";
- }
+    
+async function askAI(problem) {
+  const language = $("language").value;
+  const level = $("level").value;
 
- lastOpenSCAD=result.openscadCode||"";
- lastDiagram=result.diagram2D||"";
- $("diagramCode").textContent=lastDiagram;
- $("openscadCode").textContent=lastOpenSCAD;
+  // 1. Try Online Gemini first
+  if (navigator.onLine) {
+    try {
+      showStatus("Connecting to Online AI...");
 
- const titles={
- understanding:"PROBLEM UNDERSTANDING",
- solution:"DIRECT SOLUTION",
- ideas:"INNOVATION CONCEPTS",
- bestIdea:"BEST IDEA",
- actionPlan:"ACTION PLAN",
- innovationConcept:"INNOVATION CONCEPT",
- feasibility:"SCIENTIFIC FEASIBILITY",
- components:"ENGINEERING DESIGN / COMPONENTS",
- dimensions:"DIMENSIONS",
- materials:"MATERIALS",
- bom:"BILL OF MATERIALS",
- suppliers:"SUPPLIER RESEARCH",
- prototypePlan:"PROTOTYPE PLAN",
- risks:"RISKS AND SAFETY",
- model3D:"3D DESIGN CONCEPT",
- parts3D:"3D PARTS",
- assemblySteps:"ASSEMBLY STEPS",
- testingPlan:"TESTING PLAN",
- maintenance:"MAINTENANCE",
- energyAnalysis:"ENERGY ANALYSIS",
- researchNeeded:"RESEARCH REQUIRED"
- };
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 25000);
 
- lastReport=Object.entries(titles)
-  .map(([key,title])=>title+"\n"+($(key).textContent||""))
-  .join("\n\n")+"\n\n2D DIAGRAM\n"+lastDiagram+
-  "\n\nOPENSCAD CODE\n"+lastOpenSCAD;
+      let response;
+      try {
+        response = await fetch(AI_ENDPOINT, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          cache: "no-store",
+          signal: controller.signal,
+          body: JSON.stringify({problem, language, level})
+        });
+      } finally {
+        clearTimeout(timer);
+      }
 
- $("results").style.display="block";
- $("copyStatus").textContent="";
-}
+      const data = await response.json();
 
-async function askAI(problem){
- const response=await fetch(AI_ENDPOINT,{
-  method:"POST",
-  headers:{"Content-Type":"application/json"},
-  cache:"no-store",
-  body:JSON.stringify({
-   problem,
-   language:$("language").value,
-   level:$("level").value
-  })
- });
+      if (!response.ok || data.success === false) {
+        throw new Error(data.details || data.error || "Online AI failed");
+      }
 
- let data;
- try{data=await response.json();}
- catch(e){throw new Error("Server returned invalid JSON. HTTP "+response.status);}
+      const answer = typeof data.answer === "string"
+        ? data.answer
+        : data.answer && typeof data.answer === "object"
+          ? JSON.stringify(data.answer)
+          : "";
 
- if(!response.ok||data.success===false){
-  throw new Error(data.details||data.error||("HTTP "+response.status));
- }
+      if (!answer.trim()) {
+        throw new Error("Online AI returned an empty answer.");
+      }
 
- const answer=typeof data.answer==="string"?data.answer:
-  data.answer&&typeof data.answer==="object"?JSON.stringify(data.answer):"";
+      return {
+        answer,
+        source: "Online Gemini",
+        model: data.model || "Gemini"
+      };
 
- if(!answer.trim())throw new Error("AI returned an empty answer.");
- return answer;
-}
-
-async function analyze(){
- if(analyzing)return;
- const problem=$("problem").value.trim();
-
- if(!problem){
-  showStatus("Please describe your problem first.",true);
-  $("problem").focus();
-  return;
- }
- if(!navigator.onLine){
-  showStatus("Internet connection unavailable.",true);
-  return;
- }
-
- analyzing=true;
- $("analyzeBtn").disabled=true;
- $("analyzeBtn").textContent="Analyzing... Please wait";
- $("results").style.display="block";
- for(const key of fields)$(key).textContent="AI is preparing this section...";
- $("diagram").textContent="Preparing 2D diagram...";
- $("viewer").textContent="Preparing 3D concept...";
- $("openscadCode").textContent="";
- showStatus("Connecting to AI...");
-
- try{
-  const raw=await askAI(problem);
-  const parsed=parseAIResponse(raw);
-  displayResults(parsed.result);
-  showStatus("AI analysis completed successfully. Model: "+(parsed.data.model||"AI"));
-  renderDiagram(lastDiagram);
-  render3D(parsed.data.parts3D);
- }catch(error){
-  console.error(error);
-  showStatus("AI ERROR: "+error.message,true);
-  $("diagram").textContent="Diagram unavailable.";
-  $("viewer").textContent="3D concept unavailable.";
- }finally{
-  analyzing=false;
-  $("analyzeBtn").disabled=false;
-  $("analyzeBtn").textContent="🚀 Analyze & Create Innovation";
- }
-}
-
-/* Optional Mermaid diagram renderer */
-async function renderDiagram(code){
- if(!code){
-  $("diagram").textContent="AI did not provide a diagram.";
-  return;
- }
- try{
-  const module=await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs");
-  const mermaid=module.default;
-  mermaid.initialize({startOnLoad:false,theme:"dark",securityLevel:"strict"});
-  const cleaned=code.replace(/```mermaid/gi,"").replace(/```/g,"").trim();
-  const rendered=await mermaid.render("innovationDiagram",cleaned);
-  $("diagram").innerHTML=rendered.svg;
- }catch(error){
-  $("diagram").textContent=code;
- }
-}
-
-/* Interactive conceptual 3D viewer */
-async function render3D(parts){
- const viewer=$("viewer");
- viewer.innerHTML="";
- try{
-  const THREE=await import("https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js");
-  const controlsModule=await import("https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js");
-
-  const scene=new THREE.Scene();
-  scene.background=new THREE.Color("#091626");
-
-  const camera=new THREE.PerspectiveCamera(45,1,0.1,1000);
-  camera.position.set(6,5,8);
-
-  const renderer=new THREE.WebGLRenderer({antialias:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
-  viewer.appendChild(renderer.domElement);
-
-  scene.add(new THREE.AmbientLight(0xffffff,2));
-  const light=new THREE.DirectionalLight(0xffffff,2);
-  light.position.set(5,8,6);
-  scene.add(light);
-
-  const grid=new THREE.GridHelper(12,12,0x3988ff,0x263c56);
-  scene.add(grid);
-
-  const orbit=new controlsModule.OrbitControls(camera,renderer.domElement);
-  orbit.enableDamping=true;
-
-  const rawParts=Array.isArray(parts)?parts:[];
-  const count=Math.max(1,Math.min(rawParts.length,20));
-
-  for(let i=0;i<count;i++){
-   const item=rawParts[i];
-   const name=typeof item==="string"?item:
-    item&&typeof item==="object"?(item.name||item.part||("Part "+(i+1))):"Part "+(i+1);
-
-   const size=item&&typeof item==="object"&&Array.isArray(item.size)?item.size:[1.2,0.6,0.8];
-   const sx=Number(size[0])>0?Math.min(Number(size[0]),4):1.2;
-   const sy=Number(size[1])>0?Math.min(Number(size[1]),4):0.6;
-   const sz=Number(size[2])>0?Math.min(Number(size[2]),4):0.8;
-
-   const geometry=new THREE.BoxGeometry(sx,sy,sz);
-   const material=new THREE.MeshStandardMaterial({
-    color:new THREE.Color().setHSL((i*0.13+0.48)%1,0.65,0.55),
-    metalness:0.25,roughness:0.55
-   });
-   const mesh=new THREE.Mesh(geometry,material);
-   const columns=4;
-   mesh.position.set((i%columns)*1.8-2.7,sy/2,Math.floor(i/columns)*1.5-1.5);
-   scene.add(mesh);
+    } catch (error) {
+      console.warn("Online AI failed. Trying Offline AI:", error);
+      showStatus("Online AI unavailable. Switching to Offline Qwen3...");
+    }
   }
 
-  function resize(){
-   const width=Math.max(viewer.clientWidth,250);
-   const height=Math.max(viewer.clientHeight,250);
-   camera.aspect=width/height;
-   camera.updateProjectionMatrix();
-   renderer.setSize(width,height);
-  }
-  resize();
-
-  let active=true;
-  function animate(){
-   if(!active)return;
-   requestAnimationFrame(animate);
-   orbit.update();
-   renderer.render(scene,camera);
-  }
-  animate();
-
-  threeState={scene,camera,renderer,orbit,resize,stop:()=>{active=false;}};
-  $("viewer").dataset.ready="true";
- }catch(error){
-  console.error("3D viewer:",error);
-  viewer.textContent="3D viewer could not load. Check internet connection or browser WebGL support. The written 3D design concept is shown above.";
- }
-}
-
-$("reset3D").addEventListener("click",()=>{
- if(!threeState)return;
- threeState.camera.position.set(6,5,8);
- threeState.orbit.target.set(0,0,0);
- threeState.orbit.update();
-});
-
-$("diagramCodeBtn").addEventListener("click",()=>{
- const box=$("diagramCode");
- box.style.display=box.style.display==="none"?"block":"none";
-});
-
-async function copyText(text){
- if(!text){$("copyStatus").textContent="Nothing to copy.";return;}
- try{
-  await navigator.clipboard.writeText(text);
-  $("copyStatus").textContent="Copied successfully.";
- }catch(e){
-  $("copyStatus").textContent="Copy failed. Please copy manually.";
- }
-}
-$("copyCodeBtn").addEventListener("click",()=>copyText(lastOpenSCAD));
-$("copyAllBtn").addEventListener("click",()=>copyText(lastReport));
-$("analyzeBtn").addEventListener("click",analyze);
-
-$("problem").addEventListener("keydown",event=>{
- if(event.ctrlKey&&event.key==="Enter")analyze();
-});
-
-/* Voice input */
-const voiceCodes={
- English:"en-IN",Telugu:"te-IN",Hindi:"hi-IN",
- Tamil:"ta-IN",Malayalam:"ml-IN",Kannada:"kn-IN"
-};
-
-function stopVoice(){
- if(recognition){
-  try{recognition.stop();}catch(e){}
-  recognition=null;
- }
- $("speakBtn").disabled=false;
-}
-
-$("speakBtn").addEventListener("click",()=>{
- const Speech=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!Speech){
-  showStatus("Voice input is not supported in this browser.",true);
-  return;
- }
- stopVoice();
- recognition=new Speech();
- recognition.lang=voiceCodes[$("language").value]||"en-IN";
- recognition.continuous=false;
- recognition.interimResults=true;
-
- recognition.onstart=()=>{
-  $("speakBtn").disabled=true;
-  showStatus("Listening... Speak now.");
- };
- recognition.onresult=event=>{
-  let text="";
-  for(let i=0;i<event.results.length;i++){
-   text+=event.results[i][0].transcript+" ";
-  }
-  $("problem").value=text.trim();
- };
- recognition.onerror=event=>{
-  showStatus("Voice error: "+event.error,true);
- };
- recognition.onend=()=>{
-  recognition=null;
-  $("speakBtn").disabled=false;
- };
- try{recognition.start();}
- catch(e){stopVoice();showStatus("Could not start microphone.",true);}
-});
-
-$("stopBtn").addEventListener("click",()=>{
- stopVoice();
- showStatus("Voice input stopped.");
-});
-
-window.addEventListener("beforeunload",stopVoice);
-window.addEventListener("resize",()=>{
- if(threeState)threeState.resize();
-});
-</script>
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js")
-      .then(() => console.log("Offline App Cache Ready"))
-      .catch(error => console.error("Service Worker Error:", error));
-  });
-}
-</script>
-<script>
-"use strict";
-
-const PROJECT_STORAGE_KEY = "uai-engine-saved-projects-v4";
-
-function getSavedProjects() {
+  // 2. Offline Ollama fallback
   try {
-    return JSON.parse(localStorage.getItem(PROJECT_STORAGE_KEY) || "[]");
+    showStatus("Offline Qwen3:4b is preparing your innovation...");
+
+    const prompt = `
+/no_think
+
+You are Universal AI Innovation Engine, an engineering and invention assistant.
+
+Problem: ${problem}
+Output language: ${language}
+Solution level: ${level}
+
+Analyze independently. Generate practical ideas, including unusual possibilities.
+Do not merely repeat familiar solutions.
+
+Return ONLY valid JSON with exactly these keys:
+{
+  "model": "Ollama Qwen3:4b",
+  "understanding": "",
+  "solution": "",
+  "ideas": "",
+  "bestIdea": "",
+  "actionPlan": "",
+  "innovationConcept": "",
+  "feasibility": "",
+  "components": "",
+  "dimensions": "",
+  "materials": "",
+  "bom": "",
+  "suppliers": "",
+  "prototypePlan": "",
+  "risks": "",
+  "model3D": "",
+  "parts3D": [
+    {"name": "Base", "size": [2, 1, 2]},
+    {"name": "Main Body", "size": [1, 2, 1]}
+  ],
+  "assemblySteps": "",
+  "testingPlan": "",
+  "maintenance": "",
+  "energyAnalysis": "",
+  "researchNeeded": "",
+  "diagram2D": "flowchart TD\\nA[Input] --> B[Process]\\nB --> C[Output]",
+  "openscadCode": "// Concept only. Verify dimensions before fabrication.\\ncube([20,20,20]);"
+}
+
+Rules:
+- Write explanatory text in the requested language.
+- Keep answers concise and practical.
+- Mark estimated dimensions and costs clearly.
+- Never invent suppliers, research evidence, patent status or test results.
+- Identify assumptions and required tests.
+- Include relevant legal and safety precautions.
+- Do not claim that a concept is proven or patentable.
+- parts3D must be a JSON array of conceptual parts.
+- diagram2D must contain Mermaid flowchart syntax.
+- openscadCode must contain OpenSCAD source code.
+- Return valid JSON only, without Markdown fences.
+`;
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 180000);
+
+    let response;
+    try {
+      response = await fetch("http://127.0.0.1:11434/api/generate", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: "qwen3:4b",
+          prompt,
+          stream: false,
+          format: "json",
+          options: {
+            temperature: 0.4,
+            num_predict: 2500
+          }
+        })
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Ollama request failed");
+    }
+
+    if (!data.response || !data.response.trim()) {
+      throw new Error("Offline AI returned an empty answer.");
+    }
+
+    return {
+      answer: data.response,
+      source: "Offline Ollama",
+      model: "Qwen3:4b"
+    };
+
   } catch (error) {
-    return [];
+    console.error("Offline AI failed:", error);
+    throw new Error(
+      "Online and Offline AI both failed. Check Ollama. " + error.message
+    );
   }
 }
 
-function updateProjectList() {
-  const list = document.getElementById("savedProjectList");
-  const projects = getSavedProjects();
 
-  list.innerHTML = "";
+async function analyze() {
+  if (analyzing) return;
 
-  if (projects.length === 0) {
-    list.add(new Option("No saved projects yet", ""));
+  const problem = $("problem").value.trim();
+
+  if (!problem) {
+    showStatus("Please describe your problem first.", true);
+    $("problem").focus();
     return;
   }
 
-  projects.forEach(project => {
-    list.add(new Option(project.name, project.id));
-  });
-}
+  analyzing = true;
+  $("analyzeBtn").disabled = true;
+  $("analyzeBtn").textContent = "Analyzing... Please wait";
+  $("results").style.display = "block";
 
-function saveCurrentProject() {
-  const name = document.getElementById("projectName").value.trim();
-  const status = document.getElementById("projectStatus");
-
-  if (!name) {
-    status.textContent = "Please enter a project name.";
-    return;
+  for (const key of fields) {
+    $(key).textContent = "AI is preparing this section...";
   }
 
-  if (!document.getElementById("results").style.display ||
-      document.getElementById("results").style.display === "none") {
-    status.textContent = "Analyze a problem before saving.";
-    return;
-  }
-
-  const project = {
-    id: String(Date.now()),
-    name: name,
-    date: new Date().toLocaleString(),
-    problem: document.getElementById("problem").value,
-    language: document.getElementById("language").value,
-    level: document.getElementById("level").value,
-    fields: {},
-    diagram: document.getElementById("diagramCode").textContent,
-    openscad: document.getElementById("openscadCode").textContent
-  };
-
-  fields.forEach(key => {
-    project.fields[key] = document.getElementById(key).textContent;
-  });
+  $("diagram").textContent = "Preparing 2D diagram...";
+  $("viewer").textContent = "Preparing 3D concept...";
+  $("openscadCode").textContent = "";
+  showStatus("Starting AI analysis...");
 
   try {
-    const projects = getSavedProjects();
-    projects.unshift(project);
+    const ai = await askAI(problem);
+    const parsed = parseAIResponse(ai.answer);
 
-    localStorage.setItem(
-      PROJECT_STORAGE_KEY,
-      JSON.stringify(projects)
+    displayResults(parsed.result);
+
+    showStatus(
+      "Analysis completed. Source: " + ai.source +
+      " | Model: " + ai.model
     );
 
-    updateProjectList();
-    document.getElementById("savedProjectList").value = project.id;
-    status.textContent = "Project saved successfully!";
+    renderDiagram(lastDiagram);
+    render3D(parsed.data.parts3D);
+
   } catch (error) {
-    status.textContent = "Storage error: " + error.message;
+    console.error(error);
+    showStatus("AI ERROR: " + error.message, true);
+    $("diagram").textContent = "Diagram unavailable.";
+    $("viewer").textContent = "3D concept unavailable.";
+
+  } finally {
+    analyzing = false;
+    $("analyzeBtn").disabled = false;
+    $("analyzeBtn").textContent = "🚀 Analyze & Create Innovation";
   }
 }
 
-function loadSelectedProject() {
-  const id = document.getElementById("savedProjectList").value;
-  const status = document.getElementById("projectStatus");
-  const project = getSavedProjects().find(item => item.id === id);
 
-  if (!project) {
-    status.textContent = "Please select a saved project.";
-    return;
-  }
+    /* Safe Mermaid diagram renderer */
+    async function renderDiagram(code) {
+      const diagram = $("diagram");
 
-  document.getElementById("projectName").value = project.name;
-  document.getElementById("problem").value = project.problem || "";
-  document.getElementById("language").value = project.language || "English";
-  document.getElementById("level").value = project.level || "Practical";
+      if (!code || !String(code).trim()) {
+        diagram.textContent = "AI did not provide a diagram.";
+        return;
+      }
 
-  fields.forEach(key => {
-    document.getElementById(key).textContent =
-      project.fields[key] || "";
-  });
+      diagram.textContent = "Rendering 2D diagram...";
 
-  document.getElementById("diagramCode").textContent = project.diagram || "";
-  document.getElementById("openscadCode").textContent = project.openscad || "";
+      try {
+        const module = await import(
+          "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs"
+        );
 
-  lastDiagram = project.diagram || "";
-  lastOpenSCAD = project.openscad || "";
+        const mermaid = module.default;
 
-  document.getElementById("diagram").textContent =
-    lastDiagram || "No diagram saved.";
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "dark",
+          securityLevel: "strict"
+        });
 
-  document.getElementById("viewer").textContent =
-    "Saved 3D text concept. Run a new analysis to rebuild the 3D viewer.";
+        const cleaned = String(code)
+          .replace(/```mermaid/gi, "")
+          .replace(/```/g, "")
+          .trim();
 
-  document.getElementById("results").style.display = "block";
+        if (!/^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|gantt|pie|mindmap)\b/i.test(cleaned)) {
+          throw new Error("Unsupported or invalid Mermaid diagram format.");
+        }
 
-  document.getElementById("diagramCode").style.display = "none";
+        const renderId = "innovationDiagram-" + Date.now();
 
-  lastReport = fields.map(key =>
-    key.toUpperCase() + "\n" +
-    document.getElementById(key).textContent
-  ).join("\n\n") + "\n\n2D DIAGRAM\n" + lastDiagram +
-    "\n\nOPENSCAD CODE\n" + lastOpenSCAD;
+        const rendered = await mermaid.render(
+          renderId,
+          cleaned
+        );
 
-  status.textContent = "Project loaded successfully!";
-}
+        diagram.innerHTML = rendered.svg;
 
-function deleteSelectedProject() {
-  const id = document.getElementById("savedProjectList").value;
-  const status = document.getElementById("projectStatus");
+        if (rendered.bindFunctions) {
+          rendered.bindFunctions(diagram);
+        }
 
-  if (!id) {
-    status.textContent = "Please select a project to delete.";
-    return;
-  }
+      } catch (error) {
+        console.error("2D Diagram Error:", error);
 
-  const projects = getSavedProjects().filter(item => item.id !== id);
+        diagram.textContent =
+          "2D diagram could not be rendered. Original diagram code is available in the Diagram Code section.";
+      }
+    }
 
-  localStorage.setItem(PROJECT_STORAGE_KEY, JSON.stringify(projects));
+    /* Interactive conceptual 3D viewer */
+    async function render3D(parts) {
+      const viewer = $("viewer");
 
-  updateProjectList();
-  document.getElementById("projectName").value = "";
+      // Stop and clean up previous viewer
+      if (threeState) {
+        if (threeState.stop) threeState.stop();
+        if (threeState.renderer) {
+          threeState.renderer.dispose();
+        }
+        threeState = null;
+      }
 
-  status.textContent = "Selected project deleted.";
-}
+      viewer.innerHTML = "";
+      viewer.dataset.ready = "false";
 
-document.getElementById("saveProjectBtn")
-  .addEventListener("click", saveCurrentProject);
+      try {
+        const THREE = await import(
+          "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+        );
 
-document.getElementById("loadProjectBtn")
-  .addEventListener("click", loadSelectedProject);
+        const controlsModule = await import(
+          "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js"
+        );
 
-document.getElementById("deleteProjectBtn")
-  .addEventListener("click", deleteSelectedProject);
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color("#091626");
 
-updateProjectList();
-</script>
+        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+        camera.position.set(6, 5, 8);
+
+        const renderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: false
+        });
+
+        renderer.setPixelRatio(
+          Math.min(window.devicePixelRatio || 1, 2)
+        );
+
+        renderer.domElement.style.display = "block";
+        renderer.domElement.style.width = "100%";
+        renderer.domElement.style.height = "100%";
+
+        viewer.appendChild(renderer.domElement);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 2));
+
+        const light = new THREE.DirectionalLight(0xffffff, 2);
+        light.position.set(5, 8, 6);
+        scene.add(light);
+
+        scene.add(
+          new THREE.GridHelper(12, 12, 0x3988ff, 0x263c56)
+        );
+
+        const orbit = new controlsModule.OrbitControls(
+          camera,
+          renderer.domElement
+        );
+
+        orbit.enableDamping = true;
+
+        // Accept only valid parts arrays
+        const rawParts = Array.isArray(parts) ? parts : [];
+        const count = Math.max(1, Math.min(rawParts.length, 20));
+
+        for (let i = 0; i < count; i++) {
+          const item = rawParts[i];
+
+          const size =
+            item && typeof item === "object" &&
+              Array.isArray(item.size)
+              ? item.size
+              : [1.2, 0.6, 0.8];
+
+          const sx = Number(size[0]) > 0
+            ? Math.min(Number(size[0]), 4) : 1.2;
+
+          const sy = Number(size[1]) > 0
+            ? Math.min(Number(size[1]), 4) : 0.6;
+
+          const sz = Number(size[2]) > 0
+            ? Math.min(Number(size[2]), 4) : 0.8;
+
+          const geometry = new THREE.BoxGeometry(sx, sy, sz);
+
+          const material = new THREE.MeshStandardMaterial({
+            color: new THREE.Color().setHSL(
+              (i * 0.13 + 0.48) % 1,
+              0.65,
+              0.55
+            ),
+            metalness: 0.25,
+            roughness: 0.55
+          });
+
+          const mesh = new THREE.Mesh(geometry, material);
+
+          mesh.position.set(
+            (i % 4) * 1.8 - 2.7,
+            sy / 2,
+            Math.floor(i / 4) * 1.5 - 1.5
+          );
+
+          scene.add(mesh);
+        }
+
+        function resize() {
+          const width = Math.max(viewer.clientWidth, 250);
+          const height = Math.max(viewer.clientHeight, 250);
+
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+
+          renderer.setSize(width, height);
+        }
+
+        resize();
+
+        let active = true;
+        let animationId;
+
+        function animate() {
+          if (!active) return;
+
+          animationId = requestAnimationFrame(animate);
+
+          orbit.update();
+          renderer.render(scene, camera);
+        }
+
+        animate();
+
+        threeState = {
+          scene,
+          camera,
+          renderer,
+          orbit,
+          resize,
+          stop: () => {
+            active = false;
+            cancelAnimationFrame(animationId);
+            orbit.dispose();
+          }
+        };
+
+        viewer.dataset.ready = "true";
+
+      } catch (error) {
+        console.error("3D Viewer Error:", error);
+
+        viewer.textContent =
+          "3D Viewer unavailable. Please check internet, browser WebGL support, and the browser console. The written 3D concept remains available.";
+      }
+    }
+    $("reset3D").addEventListener("click", () => {
+      if (!threeState) return;
+      threeState.camera.position.set(6, 5, 8);
+      threeState.orbit.target.set(0, 0, 0);
+      threeState.orbit.update();
+    });
+
+    $("diagramCodeBtn").addEventListener("click", () => {
+      const box = $("diagramCode");
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    });
+
+    async function copyText(text) {
+      if (!text) {$("copyStatus").textContent = "Nothing to copy."; return;}
+      try {
+        await navigator.clipboard.writeText(text);
+        $("copyStatus").textContent = "Copied successfully.";
+      } catch (e) {
+        $("copyStatus").textContent = "Copy failed. Please copy manually.";
+      }
+    }
+    $("copyCodeBtn").addEventListener("click", () => copyText(lastOpenSCAD));
+    $("copyAllBtn").addEventListener("click", () => copyText(lastReport));
+    $("analyzeBtn").addEventListener("click", analyze);
+
+    $("problem").addEventListener("keydown", event => {
+      if (event.ctrlKey && event.key === "Enter") analyze();
+    });
+
+    /* Voice input */
+    const voiceCodes = {
+      English: "en-IN", Telugu: "te-IN", Hindi: "hi-IN",
+      Tamil: "ta-IN", Malayalam: "ml-IN", Kannada: "kn-IN"
+    };
+
+    function stopVoice() {
+      if (recognition) {
+        try {recognition.stop();} catch (e) { }
+        recognition = null;
+      }
+      $("speakBtn").disabled = false;
+    }
+
+    $("speakBtn").addEventListener("click", () => {
+      const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Speech) {
+        showStatus("Voice input is not supported in this browser.", true);
+        return;
+      }
+      stopVoice();
+      recognition = new Speech();
+      recognition.lang = voiceCodes[$("language").value] || "en-IN";
+      recognition.continuous = false;
+      recognition.interimResults = true;
+
+      recognition.onstart = () => {
+        $("speakBtn").disabled = true;
+        showStatus("Listening... Speak now.");
+      };
+      recognition.onresult = event => {
+        let text = "";
+        for (let i = 0; i < event.results.length; i++) {
+          text += event.results[i][0].transcript + " ";
+        }
+        $("problem").value = text.trim();
+      };
+      recognition.onerror = event => {
+        showStatus("Voice error: " + event.error, true);
+      };
+      recognition.onend = () => {
+        recognition = null;
+        $("speakBtn").disabled = false;
+      };
+      try {recognition.start();}
+      catch (e) {stopVoice(); showStatus("Could not start microphone.", true);}
+    });
+
+    $("stopBtn").addEventListener("click", () => {
+      stopVoice();
+      showStatus("Voice input stopped.");
+    });
+
+    window.addEventListener("beforeunload", stopVoice);
+    window.addEventListener("resize", () => {
+      if (threeState) threeState.resize();
+    });
+  </script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js")
+          .then(() => console.log("Offline App Cache Ready"))
+          .catch(error => console.error("Service Worker Error:", error));
+      });
+    }
+  </script>
+  <script>
+    "use strict";
+
+    const PROJECT_STORAGE_KEY = "uai-engine-saved-projects-v4";
+
+    function getSavedProjects() {
+      try {
+        return JSON.parse(localStorage.getItem(PROJECT_STORAGE_KEY) || "[]");
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function updateProjectList() {
+      const list = document.getElementById("savedProjectList");
+      const projects = getSavedProjects();
+
+      list.innerHTML = "";
+
+      if (projects.length === 0) {
+        list.add(new Option("No saved projects yet", ""));
+        return;
+      }
+
+      projects.forEach(project => {
+        list.add(new Option(project.name, project.id));
+      });
+    }
+
+    function saveCurrentProject() {
+      const name = document.getElementById("projectName").value.trim();
+      const status = document.getElementById("projectStatus");
+
+      if (!name) {
+        status.textContent = "Please enter a project name.";
+        return;
+      }
+
+      if (!document.getElementById("results").style.display ||
+        document.getElementById("results").style.display === "none") {
+        status.textContent = "Analyze a problem before saving.";
+        return;
+      }
+
+      const project = {
+        id: String(Date.now()),
+        name: name,
+        date: new Date().toLocaleString(),
+        problem: document.getElementById("problem").value,
+        language: document.getElementById("language").value,
+        level: document.getElementById("level").value,
+        fields: {},
+        diagram: document.getElementById("diagramCode").textContent,
+        openscad: document.getElementById("openscadCode").textContent
+      };
+
+      fields.forEach(key => {
+        project.fields[key] = document.getElementById(key).textContent;
+      });
+
+      try {
+        const projects = getSavedProjects();
+        projects.unshift(project);
+
+        localStorage.setItem(
+          PROJECT_STORAGE_KEY,
+          JSON.stringify(projects)
+        );
+
+        updateProjectList();
+        document.getElementById("savedProjectList").value = project.id;
+        status.textContent = "Project saved successfully!";
+      } catch (error) {
+        status.textContent = "Storage error: " + error.message;
+      }
+    }
+
+    function loadSelectedProject() {
+      const id = document.getElementById("savedProjectList").value;
+      const status = document.getElementById("projectStatus");
+      const project = getSavedProjects().find(item => item.id === id);
+
+      if (!project) {
+        status.textContent = "Please select a saved project.";
+        return;
+      }
+
+      document.getElementById("projectName").value = project.name;
+      document.getElementById("problem").value = project.problem || "";
+      document.getElementById("language").value = project.language || "English";
+      document.getElementById("level").value = project.level || "Practical";
+
+      fields.forEach(key => {
+        document.getElementById(key).textContent =
+          project.fields[key] || "";
+      });
+
+      document.getElementById("diagramCode").textContent = project.diagram || "";
+      document.getElementById("openscadCode").textContent = project.openscad || "";
+
+      lastDiagram = project.diagram || "";
+      lastOpenSCAD = project.openscad || "";
+
+      document.getElementById("diagram").textContent =
+        lastDiagram || "No diagram saved.";
+
+      document.getElementById("viewer").textContent =
+        "Saved 3D text concept. Run a new analysis to rebuild the 3D viewer.";
+
+      document.getElementById("results").style.display = "block";
+
+      document.getElementById("diagramCode").style.display = "none";
+
+      lastReport = fields.map(key =>
+        key.toUpperCase() + "\n" +
+        document.getElementById(key).textContent
+      ).join("\n\n") + "\n\n2D DIAGRAM\n" + lastDiagram +
+        "\n\nOPENSCAD CODE\n" + lastOpenSCAD;
+
+      status.textContent = "Project loaded successfully!";
+    }
+
+    function deleteSelectedProject() {
+      const id = document.getElementById("savedProjectList").value;
+      const status = document.getElementById("projectStatus");
+
+      if (!id) {
+        status.textContent = "Please select a project to delete.";
+        return;
+      }
+
+      const projects = getSavedProjects().filter(item => item.id !== id);
+
+      localStorage.setItem(PROJECT_STORAGE_KEY, JSON.stringify(projects));
+
+      updateProjectList();
+      document.getElementById("projectName").value = "";
+
+      status.textContent = "Selected project deleted.";
+    }
+
+    document.getElementById("saveProjectBtn")
+      .addEventListener("click", saveCurrentProject);
+
+    document.getElementById("loadProjectBtn")
+      .addEventListener("click", loadSelectedProject);
+
+    document.getElementById("deleteProjectBtn")
+      .addEventListener("click", deleteSelectedProject);
+
+    updateProjectList();
+  </script>
 </body>
+
 </html>
